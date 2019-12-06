@@ -10,7 +10,6 @@ public class Application {
 		Controller c = new Controller(me);
 		
 		int port = Integer.parseInt(args[0]);
-		System.out.println(port);
 		InformationThread ith = new InformationThread(c,port); //Port à rendre dynamique
 		ith.start();
 
