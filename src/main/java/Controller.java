@@ -13,7 +13,14 @@ public class Controller {
 	}
 	
 	public boolean changePseudo(String pseudo) {
-		return false;
+            boolean rs= userlist.checkPseudoAvailability(pseudo);
+            if(!rs){
+                System.out.println("pseudo utilisé, choisir un autre");
+                return false;
+                
+            }
+            return true;
+		
 	}
 	
 	public boolean login(int id,String pseudo) {
