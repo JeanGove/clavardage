@@ -14,6 +14,7 @@ public class Controller {
 	
 	public boolean changePseudo(String pseudo) {
             boolean rs= userlist.checkPseudoAvailability(pseudo);
+            
             if(!rs){
                 System.out.println("pseudo utilisé, choisir un autre");
                 return false;
