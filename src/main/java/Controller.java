@@ -6,10 +6,10 @@ import java.util.*;
 
 public class Controller {
 	private User associatedUser;
-	private ActiveUserList userlist;
+	private ActiveUserList userlist = new ActiveUserList();
 	
 	public Controller(User me) {
-		
+		this.associatedUser = me;
 	}
 	
 	public boolean changePseudo(String pseudo) {
@@ -70,6 +70,11 @@ public class Controller {
 		}
 		
 		
+	}
+
+	public void addUser(int id,String pseudo){
+		User u = new User(pseudo,id);
+		this.userlist.addUser(u);
 	}
 	
 	public void receiveMessage(Message message, User dest) {

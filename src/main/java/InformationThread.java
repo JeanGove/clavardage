@@ -46,9 +46,9 @@ public class InformationThread extends Thread{
 					
 					int port = inPacket.getPort();
 					InetAddress addr = inPacket.getAddress();
-					String data = new String(inPacket.getData());
-					System.out.println(port+" "+data+" "+this.port); 
-					new DataOperation(controller, port, addr, data, this.port).start();
+					String data = new String(inPacket.getData(),0,inPacket.getLength());
+				
+					new DataOperation(controller, port, addr, data, ds).start();
 					
 					System.out.println("received");
 				}
@@ -69,63 +69,58 @@ class DataOperation extends Thread{
 	private	int port;
 	private InetAddress addr; //Nécessite peut-être un clone
 	private	String data;
-	private int sport;
+	private DatagramSocket ds;
 	private Controller c;
 	
-	public DataOperation (Controller c, int port,InetAddress addr, String data, int sport){
+	public DataOperation (Controller c, int port,InetAddress addr, String data, DatagramSocket ds){
 		this.port = port;
 		this.addr = addr;
 		this.data = data;
-		this.sport = sport;
+		this.ds = ds;
+		this.c = c;
 	}
 	
 	public void run(){
 		
 		//5. Accept address
 
-				//System.out.println(data);
 				String[] argv = data.split("\\|");
-				System.out.println(argv[0]+".");
-				
-				switch(argv[0]){
-					case "connect":
-						System.out.println("connect");
-						System.out.println("port:"+this.port);
-						/*try{
-							DatagramSocket ds = new DatagramSocket(this.sport);
-							//Tell my ID to the newly connected machine
-							String message = "whoIam|"+this.c.getPseudo()+"|"+this.c.getId();
-							try{
-								
-								DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.addr, this.port);
-								
-								ds.send(outPacket);
-							}catch(IOException e){
-								e.printStackTrace();
-							}
-						}catch(SocketException e1){
-							e1.printStackTrace();
-						}*/
-						break;
-					case "startChating":
-											//this.controller.createServer(clientAdress,clientPort);
-							
-						System.out.println("startChating");
-						break;
-					case "endChating":
-						System.out.println("endChating");
-						break;
-					case "disconnect":
-						System.out.println("disconnect");
-						break;
-					case "whoIam":
-						System.out.println("whoIam");
-						break;
-					default:
-								
+
+				if(argv[0].equals("connect")){
+						//Tell my ID to the newly connected machine
+						String message = "whoIam|"+this.c.getPseudo()+"|"+this.c.getId();
+						try{
+							DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.addr, this.port);
+
+							this.ds.send(outPacket);
+						}catch(IOException e){
+							e.printStackTrace();
+						}       
+				}
+				else if(argv[0].equals("startChating")){
+					//this.controller.createServer(clientAdress,clientPort);
+					
+					System.out.println("startChating");
+				}
+				else if(argv[0].equals("endChating")){
+					System.out.println("endChating");
+				}
+				else if(argv[0].equals("disconnect")){
+					System.out.println("disconnect");
+				}
+				else if(argv[0].equals("whoIam")){
+					//forme = whoIam|Name|ID
+					String pseudo = argv[1];
+					int id = Integer.parseInt(argv[2]);
+
+					c.addUser(id, pseudo);
+					System.out.println("whoIam");
+				}
+				else{
+					System.out.println("unknown Function : "+argv[0]);
 				}
 				
-				
+				//Just to log what is sent
 				for(int i=1;i<argv.length;i++){
 					System.out.println(argv[i]);
 				}
