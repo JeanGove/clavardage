@@ -68,7 +68,10 @@ public class Controller {
 		User u = new User(pseudo,id);
 		this.userlist.addUser(u);
 	}
-	
+	public void removeUser(int id){
+		User u = this.userlist.getUser(id);
+		this.userlist.removeUser(u);
+	}
 	public void receiveMessage(Message message, User dest) {
 		
 		

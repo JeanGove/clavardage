@@ -29,4 +29,12 @@ public class ActiveUserList {
 	public ArrayList<User> getUsers(){
 		return userlist;
 	}
+	public User getUser(int id){
+		for (User user : userlist) {
+			if (user.getId() == id) {
+				return user;
+			}
+		}
+		return null;
+	}
 }

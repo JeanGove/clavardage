@@ -106,6 +106,10 @@ class DataOperation extends Thread{
 					System.out.println("endChating");
 				}
 				else if(argv[0].equals("disconnect")){
+					//forme = disconnect|ID
+					int id = Integer.parseInt(argv[1]);
+
+					c.removeUser(id);
 					System.out.println("disconnect");
 				}
 				else if(argv[0].equals("whoIam")){
