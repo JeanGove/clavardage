@@ -21,11 +21,21 @@ public class ActiveUserList {
 		}
 	}
 	public boolean updateUser(int id, String pseudo) {
+           
 		return false;
 	}
 	public boolean checkPseudoAvailability(String pseudo) {
-		return false;
-	}
+            
+            for(User u :this.userlist){
+                if( u.getPseudo().equals(pseudo)){
+                    return false;
+                }
+                
+            }
+              return true;
+        }
+		
+
 	public ArrayList<User> getUsers(){
 		return userlist;
 	}
