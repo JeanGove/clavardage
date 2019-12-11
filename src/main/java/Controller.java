@@ -67,14 +67,15 @@ public class Controller {
 		return false;
 	}
 	
-	/** Create a Connector an link it to an user
+	/** Establish a connection to an user
 	 * 
 	 * @param dest User to link with a server-client TCP socket couple
 	 */
-	public void createConnector(User dest) {
-		/*ServerSocket server;
+	public void connectAsServer(User dest, int port) {
+
+		ServerSocket server;
 		try {
-			server = new ServerSocket(1025);
+			server = new ServerSocket(port);
 		
 			Socket link;
 			try {
@@ -88,8 +89,17 @@ public class Controller {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 	}
+
+        public void connectAsClient(User dest, int port) {
+            Socket link;
+            
+            DatagramSocket socketUDP = new DatagramSocket(1234);
+            
+             
+
+        }
 	
 	/** Send a message
 	 * 
