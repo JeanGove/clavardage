@@ -16,16 +16,27 @@ public class User {
 		this.pseudo = pseudo;
 		this.id =id;
 	}
-	//recuperer le pseudo
+
+	/**
+	 * Get the pseudo
+	 * @return Returns a pseudo
+	 */
 	public String getPseudo() {
 		return pseudo;
 	}
-	//recuperer le id
+	
+	/**
+	 * Get the ID
+	 * @return Returns an ID
+	 */
 	public int getId() {
 		return id;
 	}
 	
-	//
+	/**
+	 * Set the pseudo
+	 * @return Returns true if succeeded
+	 */
 	public boolean setPseudo(String pseudo) {
 		this.pseudo = pseudo ;
 		return true;

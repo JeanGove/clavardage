@@ -11,6 +11,11 @@ public class Connector {
 	public ObjectInputStream in;
 	public ObjectOutputStream out;
 	
+	/**
+	 * Couple of server-client TCP sockets
+	 * @param sv Server socket
+	 * @param sk Client socket
+	 */
 	public Connector(ServerSocket sv, Socket sk) {
 		this.server =sv;
 		this.sock = sk;

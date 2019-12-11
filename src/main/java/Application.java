@@ -1,7 +1,10 @@
 //package clavardage;
 
 public class Application {
-
+	/**
+	 * Main object
+	 * @param args Arguments to lauch
+	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//Temporaire
