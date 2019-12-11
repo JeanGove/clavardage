@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.nio.Buffer;
 
 public class InformationThread extends Thread{
 	public int port;
@@ -113,10 +114,20 @@ class DataOperation extends Thread{
 							e.printStackTrace();
 						}       
 				}
-				else if(argv[0].equals("startChating")){
-					//this.controller.createServer(clientAdress,clientPort);
-					
-					System.out.println("startChating");
+				else if(argv[0].equals("createChatServer")){					
+					System.out.println("createChatServer");
+					//Prepare the response 
+					DatagramSocket datas = new DatagramSocket();
+					String message = c.getId()+"|"+c.getPseudo();
+					//Send a packet to inform about which port can be used
+					DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length, this.addr, this.port);
+					datas.send(p);
+					//Pick up the used port
+					int newPort = datas.getPort();
+					//Close the UDP socket
+					datas.close();
+					//Reopen the socket but in TCP
+					c.connectAsServer(newPort);
 				}
 				else if(argv[0].equals("endChating")){
 					System.out.println("endChating");

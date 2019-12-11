@@ -11,7 +11,11 @@ public class User {
 	public Connector connector = null;
 	
 	
-	//construteur 
+	/**
+	 * Create an user
+	 * @param pseudo 
+	 * @param id
+	 */
 	public User (String pseudo, int id) {
 		this.pseudo = pseudo;
 		this.id =id;
