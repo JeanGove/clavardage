@@ -1,4 +1,3 @@
-//package clavardage;
 import java.io.IOException;
 import java.lang.Thread;
 import java.net.DatagramPacket;
@@ -11,11 +10,18 @@ public class InformationThread extends Thread{
 	public Controller controller;
 	private DatagramSocket ds;
 	
+	/**
+     * Create a Information thread object and use it as an UDP server with a port and an associated controller
+     * 
+     * @param c The Controller associated to the current application
+     * @param port port used by the application
+     */
 	public InformationThread(Controller c,int port) {
 		this.port = port;
 		this.controller = c;
 	}
 	
+	/* Launch the UDP server thread */
 	public void run() {
 		try {
 			//Create a socket to send or receive UDP messages
@@ -72,6 +78,15 @@ class DataOperation extends Thread{
 	private DatagramSocket ds;
 	private Controller c;
 	
+	    /**
+     * Create a thread which have to treat all data received by UDP and do actions according to the content
+     * 
+     * @param c The Controller associated to the current application
+     * @param port port of the sender
+     * @param addr InetAdress object related to the sender
+     * @param data Data received from the sender
+	 * @param ds UDP socket associated to the current application
+     */
 	public DataOperation (Controller c, int port,InetAddress addr, String data, DatagramSocket ds){
 		this.port = port;
 		this.addr = addr;
@@ -79,7 +94,8 @@ class DataOperation extends Thread{
 		this.ds = ds;
 		this.c = c;
 	}
-	
+
+	/* Launch the thread */
 	public void run(){
 		
 		//5. Accept address
