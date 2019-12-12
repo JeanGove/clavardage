@@ -34,8 +34,6 @@ public class InformationThread extends Thread{
 			ds = new DatagramSocket(this.port);
 			System.out.println("Notify connection on "+this.broadcast.getHostName());
 			try{
-				//Creating a broadcast host
-				InetAddress host = InetAddress.getLocalHost();
 			
 				//Ask for system's users ID
 				String message = "connect";

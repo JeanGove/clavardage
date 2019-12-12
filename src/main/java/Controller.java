@@ -91,7 +91,7 @@ public class Controller {
    
                 try {
         
-                    DatagramSocket dgramSocket= new DatagramSocket(1025);
+                    DatagramSocket dgramSocket= new DatagramSocket();
 
                     //criar um datagrama a enviar
                     String messageOut = "createChatServer";
@@ -108,9 +108,9 @@ public class Controller {
                     // para recuperar a mensagem do buffer
                     String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
                     int port = inPacket.getPort();
-                    System.out.println(messageIn);
-                    dgramSocket.close();
 
+					dgramSocket.close();
+	
                     InetAddress address = InetAddress.getLocalHost();
                    // criamos o socket onde vamos nos connectar ao serveur com o sue 
                    Socket link = new Socket(address,port);
