@@ -6,7 +6,7 @@ public class User {
 	
 	private int id;
 	private String pseudo;
-	public InetAddress adress ;
+	public InetAddress address ;
 	public int infoPort = 1025;
 	public Connector connector = null;
 	
@@ -20,6 +20,18 @@ public class User {
 		this.pseudo = pseudo;
 		this.id =id;
 	}
+        
+        /**
+	 * Create an user
+	 * @param pseudo 
+	 * @param id
+	 */
+	public User (String pseudo, int id, InetAddress address ) {
+		this.pseudo = pseudo;
+		this.id =id;
+                this.address= address;
+	}
+        
 
 	/**
 	 * Get the pseudo
@@ -35,6 +47,10 @@ public class User {
 	 */
 	public int getId() {
 		return id;
+	}
+	
+        public InetAddress getAddress() {
+		return address;
 	}
 	
 	/**
