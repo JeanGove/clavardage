@@ -12,8 +12,10 @@ public class Application {
 		// Stable
 		Controller c = new Controller(me);
 		
-		int port = Integer.parseInt(args[0]);
+		//Port fixe pour la réception d'infos
+		int port = 1025;
 		InformationThread ith = new InformationThread(c,port); //Port à rendre dynamique
+		ith.getBroadcastAddress("wlp2s0");
 		ith.start();
 
 	}

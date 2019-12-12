@@ -5,11 +5,16 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.Buffer;
+import java.util.List;
+import java.util.Iterator;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 
 public class InformationThread extends Thread{
 	public int port;
 	public Controller controller;
 	private DatagramSocket ds;
+	public InetAddress broadcast;
 	
 	/**
      * Create a Information thread object and use it as an UDP server with a port and an associated controller
@@ -27,14 +32,14 @@ public class InformationThread extends Thread{
 		try {
 			//Create a socket to send or receive UDP messages
 			ds = new DatagramSocket(this.port);
-			System.out.println("Notify connection");
+			System.out.println("Notify connection on "+this.broadcast.getHostName());
 			try{
 				//Creating a broadcast host
 				InetAddress host = InetAddress.getLocalHost();
 			
 				//Ask for system's users ID
 				String message = "connect";
-				DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),host, 1025+(this.port%2));
+				DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast, this.port);
 				//Send the message
 				ds.send(outPacket);
 			}catch(IOException e ){
@@ -68,6 +73,26 @@ public class InformationThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public InetAddress getBroadcastAddress(String interf){
+		try{
+			
+			NetworkInterface en1 = NetworkInterface.getByName(interf);
+			List<InterfaceAddress> list = en1.getInterfaceAddresses();
+			Iterator<InterfaceAddress> it = list.iterator();
+
+			while (it.hasNext()) {
+				InterfaceAddress ia = it.next();
+				if(ia.getBroadcast() !=  null){
+					this.broadcast = ia.getBroadcast();
+					return this.broadcast;
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
 
@@ -116,18 +141,19 @@ class DataOperation extends Thread{
 				}
 				else if(argv[0].equals("createChatServer")){					
 					System.out.println("createChatServer");
+				/*
 					//Prepare the response 
 					DatagramSocket datas = new DatagramSocket();
 					String message = c.getId()+"|"+c.getPseudo();
 					//Send a packet to inform about which port can be used
-					DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length, this.addr, this.port);
+					DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
 					datas.send(p);
 					//Pick up the used port
 					int newPort = datas.getPort();
 					//Close the UDP socket
 					datas.close();
 					//Reopen the socket but in TCP
-					c.connectAsServer(newPort);
+					c.connectAsServer(newPort);*/
 				}
 				else if(argv[0].equals("endChating")){
 					System.out.println("endChating");
