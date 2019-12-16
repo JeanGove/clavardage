@@ -150,8 +150,8 @@ public class Controller {
 	 * @param id ID of the user
 	 * @param pseudo Pseudo of the user
 	 */
-	public void addUser(int id,String pseudo){
-		User u = new User(pseudo,id);
+	public void addUser(int id,String pseudo, InetAddress addr){
+		User u = new User(pseudo,id, addr);
 		this.userlist.addUser(u);
 	}
 	

@@ -20,16 +20,16 @@ public class User {
 		this.pseudo = pseudo;
 		this.id =id;
 	}
-        
-        /**
+		
+	        /**
 	 * Create an user
 	 * @param pseudo 
 	 * @param id
 	 */
-	public User (String pseudo, int id, InetAddress address ) {
+	public User (String pseudo, int id, InetAddress addr ) {
 		this.pseudo = pseudo;
 		this.id =id;
-                this.address= address;
+        this.address= addr;
 	}
         
 
@@ -49,7 +49,7 @@ public class User {
 		return id;
 	}
 	
-        public InetAddress getAddress() {
+    public InetAddress getAddress() {
 		return address;
 	}
 	

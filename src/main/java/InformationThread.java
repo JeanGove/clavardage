@@ -175,7 +175,7 @@ class DataOperation extends Thread{
 					String pseudo = argv[1];
 					int id = Integer.parseInt(argv[2]);
 
-					c.addUser(id, pseudo);
+					c.addUser(id, pseudo, this.addr);
 					System.out.println("whoIam");
 				}
 				else{
