@@ -69,10 +69,12 @@ class CLI{
 
 			} else if (command.equals("chat")) {
 				System.out.println("Start chat session with");
+			}else if(command.equals("quit")){
+				System.out.println("Exiting program");
 			} else {
 				System.out.println("ERROR: Not recognized command");
 			}
 		}
-		System.out.println("Exiting program");
+
 	}
 }
