@@ -68,8 +68,13 @@ class CLI{
 				}
 
 			} else if (command.equals("chat")) {
-				System.out.println("Start chat session with");
-			}else if(command.equals("quit")){
+				int dest = Integer.parseInt(entered.split(" ")[1]);
+				User u = this.controller.getUserList().get(dest);
+
+				System.out.println("Start chat session with "+u.getPseudo());
+
+				this.controller.connectAsClient(u);
+			} else if(command.equals("quit")){
 				System.out.println("Exiting program");
 			} else {
 				System.out.println("ERROR: Not recognized command");
