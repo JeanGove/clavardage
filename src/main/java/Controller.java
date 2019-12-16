@@ -69,57 +69,64 @@ public class Controller {
 		return false;
 	}
 	
-	/** Establish a connection to an user
+	/** Establish a connection to an user while requested
 	 * 
 	 * @param dest User to link with a server-client TCP socket couple
 	 */
 	public void connectAsServer(int port) {
-
-		    try {
-                            ServerSocket server = new ServerSocket(port);
-                            Socket link = server.accept();
-                            Connector con = new Connector(server,link);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		try {
+						ServerSocket server = new ServerSocket(port);
+						Socket link = server.accept();
+						Connector con = new Connector(server,link);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-        public void connectAsClient(User dest) {
-            
-   
-                try {
-        
-                    DatagramSocket dgramSocket= new DatagramSocket();
+	/** Request and Establish a connection to an user
+	 * 
+	 * @param dest User to link with a server-client TCP socket couple
+	 */
+    public void connectAsClient(User dest) {
+		try {
 
-                    //criar um datagrama a enviar
-                    String messageOut = "createChatServer";
+			DatagramSocket dgramSocket= new DatagramSocket();
 
-                    DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
-                    dgramSocket.send(outPacket); // para enviar
+			//criar um datagrama a enviar
+			String messageOut = "createChatServer";
 
-                    System.out.println(messageOut);
-                    byte[] buffer = new byte[256];
-                    // para receber datagramas 
-                    DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
-                    // Para aceitar os datagramas 
-                    dgramSocket.receive(inPacket);
-                    // para recuperar a mensagem do buffer
-                    String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
-                    int port = inPacket.getPort();
+			DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
+			dgramSocket.send(outPacket); // para enviar
 
-					dgramSocket.close();
-	
-                    InetAddress address = InetAddress.getLocalHost();
-                   // criamos o socket onde vamos nos connectar ao serveur com o sue 
-                   Socket link = new Socket(address,port);
+			System.out.println(messageOut);
+			byte[] buffer = new byte[256];
+			// para receber datagramas 
+			DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
+			// Para aceitar os datagramas 
+			dgramSocket.receive(inPacket);
+			// para recuperar a mensagem do buffer
+			//String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
+			int port = inPacket.getPort();
 
-                   link.close() ;
-            } catch(IOException e){}
+
+			dgramSocket.close();
+
+			InetAddress address = InetAddress.getLocalHost();
+			// criamos o socket onde vamos nos connectar ao serveur com o sue 
+			Socket link = new Socket(address,port);
+
+			// Create a Connector thanks to received datas
+			Connector con = new Connector(link);
+			dest.connector = con;
+			
+			link.close() ;
+		} catch(IOException e){
+			e.printStackTrace();
+		}
              
 
-        }
+    }
 	
 	/** Send a message
 	 * 
@@ -155,6 +162,14 @@ public class Controller {
 	public void removeUser(int id){
 		User u = this.userlist.getUser(id);
 		this.userlist.removeUser(u);
+	}
+
+	/**
+	 * Get the list of all connected users
+	 * @return an User list of all a connected users
+	 */
+	public ArrayList<User> getUserList(){
+		return this.userlist.getUsers();
 	}
 
 	/**

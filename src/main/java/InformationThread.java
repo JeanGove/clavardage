@@ -4,16 +4,19 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.Buffer;
 import java.util.List;
 import java.util.Iterator;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 
 public class InformationThread extends Thread{
+	/** The port whereon the informations will be received */
 	public int port;
+	/** The application's controller*/
 	public Controller controller;
+	/** The UDP socket used to receive all informations from the outside */
 	private DatagramSocket ds;
+	/** Broadcast address that will be used for this communication */
 	public InetAddress broadcast;
 	
 	/**
@@ -27,7 +30,7 @@ public class InformationThread extends Thread{
 		this.controller = c;
 	}
 	
-	/* Launch the UDP server thread */
+	/** Launch the information thread */
 	public void run() {
 		try {
 			//Create a socket to send or receive UDP messages
@@ -73,6 +76,11 @@ public class InformationThread extends Thread{
 		}
 	}
 
+	/**
+	 * Get a broadcast address associated to the currently used interface
+	 * @param interf The name of the used interface on the system
+	 * @return The InetAddress linked to the broadcast address
+	 */
 	public InetAddress getBroadcastAddress(String interf){
 		try{
 			
@@ -122,7 +130,6 @@ class DataOperation extends Thread{
 	/* Launch the thread */
 	public void run(){
 		
-		//5. Accept address
 
 				String[] argv = data.split("\\|");
 
