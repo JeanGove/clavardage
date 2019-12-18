@@ -11,14 +11,18 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		String name = args[0];
+		int id = Integer.parseInt(args[1]);
+
 		//Temporaire
-		User me = new User("Esteban",16);
+		User me = new User(name,id);
 		// Stable
 		Controller c = new Controller(me);
 		
 		//Port fixe pour la réception d'infos
 		int port = 1025;
 		InformationThread ith = new InformationThread(c,port); //Port à rendre dynamique
+		//ith.getBroadcastAddress("eth0");
 		ith.getBroadcastAddress("wlp2s0");
 		ith.start();
 		//Command line interface

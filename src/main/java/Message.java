@@ -1,11 +1,13 @@
-//package clavardage;
-
-
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class Message {
+public class Message implements Serializable{
 	
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 	private Date date;
 	private int sourceId;
 	private int destId;
@@ -30,7 +32,7 @@ public class Message {
 	 * @return Returns an ID
 	 */
 	public int getSourceId() {
-		return sourceId;
+		return this.sourceId;
 	}
 		
 	/**
@@ -38,7 +40,7 @@ public class Message {
 	 * @return Returns an ID
 	 */
 	public int getDestId() {
-		return destId;
+		return this.destId;
 	}
 		
 	/**
@@ -46,7 +48,15 @@ public class Message {
 	 * @return Returns the message as a String
 	 */
 	public String getContent() {
-		return content;
+		return this.content;
+	}
+
+	/**
+	 * Get the Date of the message
+	 * @return Returns the date of the message
+	 */
+	public Date getDate(){
+		return this.date;
 	}
 	
 	

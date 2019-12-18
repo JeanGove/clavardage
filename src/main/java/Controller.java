@@ -138,10 +138,10 @@ public class Controller {
 		if(dest.connector == null) {	
 			
 		}
-                try {
-                dest.connector.out.writeObject(message);
-                
-                 } catch(IOException e){}
+		try {
+			dest.connector.out.writeObject(message);
+		
+		} catch(IOException e){}
 		
 	}
 
