@@ -29,7 +29,7 @@ public class User {
 	public User (String pseudo, int id, InetAddress addr ) {
 		this.pseudo = pseudo;
 		this.id =id;
-        this.address= addr;
+                this.address= addr;
 	}
         
 

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Iterator;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class InformationThread extends Thread{
 	/** The port whereon the informations will be received */
@@ -146,19 +148,24 @@ class DataOperation extends Thread{
 				}
 				else if(argv[0].equals("createChatServer")){					
 					System.out.println("createChatServer");
-				/*
-					//Prepare the response 
-					DatagramSocket datas = new DatagramSocket();
-					String message = c.getId()+"|"+c.getPseudo();
-					//Send a packet to inform about which port can be used
-					DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
-					datas.send(p);
-					//Pick up the used port
-					int newPort = datas.getPort();
-					//Close the UDP socket
-					datas.close();
-					//Reopen the socket but in TCP
-					c.connectAsServer(newPort);*/
+				
+                                        try{
+                                            //Prepare the response 
+                                            DatagramSocket datas = new DatagramSocket();
+                                            String message = c.getId()+"|"+c.getPseudo();
+                                            //Send a packet to inform about which port can be used
+                                            DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
+                                            datas.send(dp);
+                                            //Pick up the used port
+                                            int newPort = datas.getPort();
+                                            //Close the UDP socket
+                                            datas.close();
+                                            //Reopen the socket but in TCP
+                                            c.connectAsServer(newPort);
+                                        }catch(Exception e){
+                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
+                                        }
+					
 				}
 				else if(argv[0].equals("endChating")){
 					System.out.println("endChating");

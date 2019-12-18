@@ -17,6 +17,7 @@ public class Controller {
 		this.associatedUser = me;
 	}
 	
+   
 	/** Change own pseudo
 	 * @param pseudo New pseudo to give
 	 */
@@ -75,9 +76,9 @@ public class Controller {
 	 */
 	public void connectAsServer(int port) {
 		try {
-						ServerSocket server = new ServerSocket(port);
-						Socket link = server.accept();
-						Connector con = new Connector(server,link);
+                    ServerSocket server = new ServerSocket(port);
+                    Socket link = server.accept();
+                    Connector con = new Connector(server,link);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,31 +91,33 @@ public class Controller {
 	 */
     public void connectAsClient(User dest) {
 		try {
-
+                        System.out.println("connectAsClient");
 			DatagramSocket dgramSocket= new DatagramSocket();
 
 			//criar um datagrama a enviar
 			String messageOut = "createChatServer";
-
+                        
 			DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
 			dgramSocket.send(outPacket); // para enviar
 
-			System.out.println(messageOut);
+			//System.out.println(messageOut);
+
 			byte[] buffer = new byte[256];
 			// para receber datagramas 
 			DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
+                                                 System.out.println("ok");
 			// Para aceitar os datagramas 
 			dgramSocket.receive(inPacket);
 			// para recuperar a mensagem do buffer
 			//String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
 			int port = inPacket.getPort();
-
+ System.out.println("ok");
 
 			dgramSocket.close();
 
 			InetAddress address = InetAddress.getLocalHost();
 			// criamos o socket onde vamos nos connectar ao serveur com o sue 
-			Socket link = new Socket(address,port);
+			Socket link = new Socket(dest.getAddress(),port);
 
 			// Create a Connector thanks to received datas
 			Connector con = new Connector(link);
