@@ -16,7 +16,14 @@ public class Application {
 		// TODO Auto-generated method stub
 		String name = args[0];
 		int id = Integer.parseInt(args[1]);
-
+                
+                String interf;
+                if(args.length < 2){
+                    interf = "wlp2s0";
+                }else{
+                    interf = args[2];
+                }
+                
 		//Temporaire
 		User me = new User(name,id);
 		// Stable
@@ -25,12 +32,8 @@ public class Application {
 		//Port fixe pour la réception d'infos
 		int port = 1025;
 		InformationThread ith = new InformationThread(c,port); //Port à rendre dynamique
-<<<<<<< HEAD
-		ith.getBroadcastAddress("eth0");
-=======
 		//ith.getBroadcastAddress("eth0");
-		ith.getBroadcastAddress("wlp2s0");
->>>>>>> f927b884281e0e50c66b89b5ad537881fea19a58
+		ith.getBroadcastAddress(interf);
 		ith.start();
 		//Command line interface
 		CLI cli = new CLI(c);
