@@ -18,7 +18,7 @@ public class Application {
 		int id = Integer.parseInt(args[1]);
                 
                 String interf;
-                if(args.length < 2){
+                if(args.length < 3){
                     interf = "wlp2s0";
                 }else{
                     interf = args[2];
