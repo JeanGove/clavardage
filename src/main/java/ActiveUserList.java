@@ -2,8 +2,9 @@
 
 import java.util.ArrayList;
 
-public class ActiveUserList {
+public class ActiveUserList extends Thread {
 	private ArrayList<User> userlist = new ArrayList<User>();
+
 	
 	/**
 	 * Create a active user list
@@ -11,6 +12,9 @@ public class ActiveUserList {
 	public ActiveUserList() {
 		
 	}
+        
+        
+        
 	/**
 	 * Add an user 
 	 * @param u User to add
