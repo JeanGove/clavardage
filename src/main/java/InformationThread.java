@@ -41,7 +41,7 @@ public class InformationThread extends Thread{
 			try{
 			
 				//Ask for system's users ID
-				String message = "connect";
+				String message = "connect|"+this.controller.getPseudo()+"|"+this.controller.getId();
 				DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast, this.port);
 				//Send the message
 				ds.send(outPacket);
@@ -49,7 +49,7 @@ public class InformationThread extends Thread{
 				e.printStackTrace();
 			}
 			
-			System.out.println("listening port on "+this.port);
+			System.out.println("listening on port "+this.port);
 		    //2. Creating the buffer to get the packet
 		    byte[] buffer = new byte[256];
 		    //3. Associate with the Datagram packet.
@@ -57,19 +57,21 @@ public class InformationThread extends Thread{
 
 		    try {
 			    for(int i=0;i<5;i++){
+				//	System.out.println("waiting for packet");
 					ds.receive(inPacket);
-					
+
 					int port = inPacket.getPort();
 					InetAddress addr = inPacket.getAddress();
 					String data = new String(inPacket.getData(),0,inPacket.getLength());
 				
 					new DataOperation(controller, port, addr, data, ds).start();
 					
-					System.out.println("received");
+					System.out.print(".");
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.out.println("Error");
 			}
 			
 		} catch (SocketException e) {
@@ -85,17 +87,21 @@ public class InformationThread extends Thread{
 	 */
 	public InetAddress getBroadcastAddress(String interf){
 		try{
-			
 			NetworkInterface en1 = NetworkInterface.getByName(interf);
-			List<InterfaceAddress> list = en1.getInterfaceAddresses();
-			Iterator<InterfaceAddress> it = list.iterator();
+			try{
+				List<InterfaceAddress> list = en1.getInterfaceAddresses();
+				Iterator<InterfaceAddress> it = list.iterator();
 
-			while (it.hasNext()) {
-				InterfaceAddress ia = it.next();
-				if(ia.getBroadcast() !=  null){
-					this.broadcast = ia.getBroadcast();
-					return this.broadcast;
+				while (it.hasNext()) {
+					InterfaceAddress ia = it.next();
+					if(ia.getBroadcast() !=  null){
+						this.broadcast = ia.getBroadcast();
+						return this.broadcast;
+					}
 				}
+			}catch(NullPointerException ne){
+				//In case of interface without any address
+				System.out.println("ERR: No address defined on "+interf);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -133,65 +139,76 @@ class DataOperation extends Thread{
 	public void run(){
 		
 
-				String[] argv = data.split("\\|");
+		String[] argv = data.split("\\|");
 
-				if(argv[0].equals("connect")){
-						//Tell my ID to the newly connected machine
-						String message = "whoIam|"+this.c.getPseudo()+"|"+this.c.getId();
-						try{
-							DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.addr, this.port);
+		if(argv[0].equals("connect")){
+			//Get the ID and pseudo of the user requesting me for name and ID
+			String pseudo = argv[1];
+			int id = Integer.parseInt(argv[2]);
+			//Check if it's not the own User object we are attempting to add
+			if(id != this.c.getId()){
+				c.addUser(id, pseudo, this.addr);
+			}
+			
+			//Tell my ID to the newly connected machine
+			String message = "whoIam|"+this.c.getPseudo()+"|"+this.c.getId();
+			try{
+				DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.addr, this.port);
 
-							this.ds.send(outPacket);
-						}catch(IOException e){
-							e.printStackTrace();
-						}       
-				}
-				else if(argv[0].equals("createChatServer")){					
-					System.out.println("createChatServer");
-				
-                                        try{
-                                            //Prepare the response 
-                                            DatagramSocket datas = new DatagramSocket();
-                                            String message = c.getId()+"|"+c.getPseudo();
-                                            //Send a packet to inform about which port can be used
-                                            DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
-                                            datas.send(dp);
-                                            //Pick up the used port
-                                            int newPort = datas.getPort();
-                                            //Close the UDP socket
-                                            datas.close();
-                                            //Reopen the socket but in TCP
-                                            c.connectAsServer(newPort);
-                                        }catch(Exception e){
-                                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
-                                        }
-					
-				}
-				else if(argv[0].equals("endChating")){
-					System.out.println("endChating");
-				}
-				else if(argv[0].equals("disconnect")){
-					//forme = disconnect|ID
-					int id = Integer.parseInt(argv[1]);
+				this.ds.send(outPacket);
+			}catch(IOException e){
+				e.printStackTrace();
+			}       
+		}
+		else if(argv[0].equals("createChatServer")){					
+			System.out.println("createChatServer");
+		
+			try{
+				//Prepare the response 
+				DatagramSocket datas = new DatagramSocket();
+				String message = c.getId()+"|"+c.getPseudo();
+				//Send a packet to inform about which port can be used
+				DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
+				datas.send(dp);
+				//Pick up the used port
+				int newPort = datas.getPort();
+				//Close the UDP socket
+				datas.close();
+				//Reopen the socket but in TCP
+				c.connectAsServer(newPort);
+			}catch(Exception e){
+				Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
+			}
 
-					c.removeUser(id);
-					System.out.println("disconnect");
-				}
-				else if(argv[0].equals("whoIam")){
-					//forme = whoIam|Name|ID
-					String pseudo = argv[1];
-					int id = Integer.parseInt(argv[2]);
+		}
+		else if(argv[0].equals("endChating")){
+			System.out.println("endChating");
+		}
+		else if(argv[0].equals("disconnect")){
+			//forme = disconnect|ID
+			int id = Integer.parseInt(argv[1]);
 
-					c.addUser(id, pseudo, this.addr);
-					System.out.println("whoIam");
-				}
-				else{
-					System.out.println("unknown Function : "+argv[0]);
-				}
-				
-				//Just to log what is sent
-				for(int i=1;i<argv.length;i++){
-					System.out.println(argv[i]);
-				}
+			c.removeUser(id);
+			System.out.println("disconnect");
+		}
+		else if(argv[0].equals("whoIam")){
+			//forme = whoIam|Name|ID
+			String pseudo = argv[1];
+			int id = Integer.parseInt(argv[2]);
+
+			//Check if it's not the own User object we are attempting to add
+			if(id != this.c.getId()){
+				c.addUser(id, pseudo, this.addr);
+			}
+			System.out.println("whoIam");
+		}
+		else{
+			System.out.println("Unknown function : "+argv[0]);
+		}
+		
+		//Just to log what is sent
+		for(int i=1;i<argv.length;i++){
+			System.out.println(argv[i]);
+		}
 	}
 }
