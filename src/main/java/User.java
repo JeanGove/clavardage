@@ -4,7 +4,7 @@ import java.net.*;
 
 public class User {
 	
-	private int id;
+	private int id = -1;
 	private String pseudo;
 	public InetAddress address ;
 	public int infoPort = 1025;

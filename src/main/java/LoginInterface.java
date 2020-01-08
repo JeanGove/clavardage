@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package GUI;
 
 /**
  *
  * @author corentin
  */
-public class Login extends javax.swing.JFrame {
+public class LoginInterface extends javax.swing.JFrame {
 
+    Controller c = new Controller();
+    
     /**
      * Creates new form Login
      */
-    public Login() {
+    public LoginInterface() {
         initComponents();
     }
 
@@ -28,8 +29,8 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        PseudoBar = new javax.swing.JTextField();
+        IDBar = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -38,19 +39,19 @@ public class Login extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel1.setText("Notre super App");
 
-        jTextField1.setToolTipText("");
-        jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder("Pseudo"));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        PseudoBar.setToolTipText("");
+        PseudoBar.setBorder(javax.swing.BorderFactory.createTitledBorder("Pseudo"));
+        PseudoBar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                PseudoBarActionPerformed(evt);
             }
         });
 
-        jTextField2.setText("previous_registered_ID");
-        jTextField2.setBorder(javax.swing.BorderFactory.createTitledBorder("ID"));
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        IDBar.setText("previous_registered_ID");
+        IDBar.setBorder(javax.swing.BorderFactory.createTitledBorder("ID"));
+        IDBar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                IDBarActionPerformed(evt);
             }
         });
 
@@ -69,9 +70,9 @@ public class Login extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(PseudoBar, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(IDBar, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(56, Short.MAX_VALUE))
@@ -82,10 +83,10 @@ public class Login extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(PseudoBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField2)
+                    .addComponent(IDBar)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(125, Short.MAX_VALUE))
         );
@@ -93,16 +94,23 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void PseudoBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PseudoBarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+        //System.out.println("truc1");
+    }//GEN-LAST:event_PseudoBarActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void IDBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDBarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+         // System.out.println("truc2");
+    }//GEN-LAST:event_IDBarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+          System.out.println("cliqué");
+          
+          int id = Integer.parseInt(this.IDBar.getText());
+          String pseudo = this.PseudoBar.getText();
+          this.c.login(id, pseudo);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -133,22 +141,38 @@ public class Login extends javax.swing.JFrame {
         try{
              javax.swing.UIManager.setLookAndFeel( javax.swing.UIManager.getSystemLookAndFeelClassName() );
         }catch(Exception e){
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
+            java.util.logging.Logger.getLogger(LoginInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                new LoginInterface().setVisible(true);
             }
         });
+
+        String interf;
+        if(args.length < 3){
+            interf = "wlp2s0";
+        }else{
+            interf = args[1];
+        }
+
+		/*
+		//Port fixe pour la réception d'infos
+		int port = 1025;
+		InformationThread ith = new InformationThread(this.c,port); //Port à rendre dynamique
+		//ith.getBroadcastAddress("eth0");
+		ith.getBroadcastAddress(interf);
+		ith.start();
+*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField IDBar;
+    private javax.swing.JTextField PseudoBar;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

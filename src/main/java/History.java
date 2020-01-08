@@ -20,7 +20,13 @@ public class History {
 	 * @return All message from the user with the number destUserId
      */
 	public ArrayList<Message> load(int destUserId) {
-		return null;
+		ArrayList<Message> list = new ArrayList<Message>();
+		for (Message message : this.messages) {
+			if(message.getSourceId() == destUserId || message.getDestId() == destUserId){
+				list.add(message);
+			}
+		}
+		return list;
 	}
 	
 	/**Load all stored messages since a specific message id
@@ -37,6 +43,7 @@ public class History {
 	 * @return Is true if the operation succeed
 	*/
 	public boolean push() {
+		//this.messages.get(0);
 		return false;
 	}
 	
@@ -45,6 +52,11 @@ public class History {
 	 * @param message The message to add
 	*/
 	public void add(Message message) {
+		/*
+		//Limit the number of stored messages
+		while (this.messages.size() > this.limitNumberOfMessage) {
+			this.push();
+		}*/
 		this.messages.add(message);
 	}
 }

@@ -9,12 +9,18 @@ import java.util.logging.Logger;
 public class Controller {
 	private User associatedUser;
 	private ActiveUserList userlist = new ActiveUserList();
-	
+	private History history = new History();
+	public boolean allUserLoaded = false;
+        private ChatPage chatPage;
 	/** Create a controller
 	 * @param me User associated to the controller
 	 */
 	public Controller(User me) {
 		this.associatedUser = me;
+	}
+
+	public Controller(){
+
 	}
 	
    
@@ -39,8 +45,12 @@ public class Controller {
 	 * @return Is true if the pseudo is available and then the combination od id and pseudo is possible
 	 */
 	public boolean login(int id,String pseudo) {
-		this.associatedUser = new User(pseudo,id);
-		return false;
+		boolean available = this.userlist.checkPseudoAvailability(pseudo);
+		if (available) {
+			this.associatedUser = new User(pseudo,id);
+			this.connect();
+		}
+		return available;
 	}
 	
 	/** Load an ActiveUserList
@@ -52,6 +62,10 @@ public class Controller {
 		/*this.userList = aul
 		return this.userlist != null;*/
 		return false;
+	}
+
+	public boolean hasUser(){
+		return this.associatedUser != null;
 	}
 	
 	/** Log out and notify the system
@@ -67,7 +81,8 @@ public class Controller {
 	 * @return Is true if the operation succeed
 	*/
 	public boolean connect() {
-		return false;
+		
+		return true;
 	}
 	
 	/** Establish a connection to an user while requested
@@ -76,9 +91,10 @@ public class Controller {
 	 */
 	public void connectAsServer(int port) {
 		try {
-                    ServerSocket server = new ServerSocket(port);
-                    Socket link = server.accept();
-                    Connector con = new Connector(server,link);
+			ServerSocket server = new ServerSocket(port);
+			Socket link = server.accept();
+			System.out.println("ok");
+			Connector con = new Connector(history, server, link);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,7 +107,7 @@ public class Controller {
 	 */
     public void connectAsClient(User dest) {
 		try {
-                        System.out.println("connectAsClient");
+            System.out.println("connectAsClient");
 			DatagramSocket dgramSocket= new DatagramSocket();
 
 			//criar um datagrama a enviar
@@ -111,7 +127,7 @@ public class Controller {
 			// para recuperar a mensagem do buffer
 			//String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
 			int port = inPacket.getPort();
- System.out.println("ok");
+ 			System.out.println("ok");
 
 			dgramSocket.close();
 
@@ -120,10 +136,10 @@ public class Controller {
 			Socket link = new Socket(dest.getAddress(),port);
 
 			// Create a Connector thanks to received datas
-			Connector con = new Connector(link);
+			Connector con = new Connector(history, link);
 			dest.connector = con;
 			
-			link.close() ;
+			//link.close() ;
 		} catch(IOException e){
 			e.printStackTrace();
 		}
@@ -139,12 +155,13 @@ public class Controller {
 	public void sendMessage(Message message, User dest) {
 		//Créer le connector s'il est absent
 		if(dest.connector == null) {	
-			
+			this.connectAsClient(dest);
 		}
 		try {
 			dest.connector.out.writeObject(message);
-		
-		} catch(IOException e){}
+		} catch(IOException e){
+
+		}
 		
 	}
 
@@ -156,6 +173,9 @@ public class Controller {
 	public void addUser(int id,String pseudo, InetAddress addr){
 		User u = new User(pseudo,id, addr);
 		this.userlist.addUser(u);
+                if(this.chatPage != null)
+                    chatPage.refreshUserlist();
+                //System.out.println(u.getPseudo() + " is added");
 	}
 	
 	/**
@@ -165,6 +185,8 @@ public class Controller {
 	public void removeUser(int id){
 		User u = this.userlist.getUser(id);
 		this.userlist.removeUser(u);
+                if(this.chatPage != null)
+                    chatPage.refreshUserlist();
 	}
 
 	/**
@@ -173,6 +195,24 @@ public class Controller {
 	 */
 	public ArrayList<User> getUserList(){
 		return this.userlist.getUsers();
+	}
+
+	/**
+	 * Get an active user with its ID
+	 * @param ID ID of the user
+	 * @return User associated to the ID
+	 */
+	public User getUserByID(int ID){
+		User user = this.userlist.getUser(ID);
+		return user;
+	}
+
+	/**
+	 * Get the history associated to the Controller
+	 * @return History associated to the Controller
+	 */
+	public History getHistory(){
+		return this.history;
 	}
 
 	/**
@@ -207,6 +247,10 @@ public class Controller {
 		return this.associatedUser.getId();
 	}
 
+        public void setChatPage(ChatPage cp){
+            this.chatPage = cp;
+        }
+        
 	/**
 	 * Start a routine
 	 */
