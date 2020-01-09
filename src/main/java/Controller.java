@@ -186,7 +186,7 @@ public class Controller {
 		User u = this.userlist.getUser(id);
 		this.userlist.removeUser(u);
                 if(this.chatPage != null)
-                    chatPage.refreshUserlist();
+                    this.chatPage.refreshUserlist();
 	}
 
 	/**
@@ -260,6 +260,7 @@ public class Controller {
 		//Initialize send thread if more than 2 CPU
 		
 	}
+
 	
 	
 }

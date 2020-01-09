@@ -1,4 +1,8 @@
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 
@@ -27,7 +31,7 @@ public class ChatPage extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("GTK+".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -55,18 +59,16 @@ public class ChatPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        ZoneMessages = new javax.swing.JTextPane();
+        MessagesPanel = new javax.swing.JPanel();
         EnvoiField = new javax.swing.JTextField();
         EnvoiBttn = new javax.swing.JButton();
+        Messages = new javax.swing.JLabel();
+        DialUserLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         Userlist = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ClavardApp");
-
-        jScrollPane1.setViewportView(ZoneMessages);
 
         EnvoiField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,33 +77,57 @@ public class ChatPage extends javax.swing.JFrame {
         });
 
         EnvoiBttn.setText("Envoyer");
+        EnvoiBttn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EnvoiBttnActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        Messages.setText("<html><p>Messages</p></html>");
+        Messages.setToolTipText("");
+        Messages.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        DialUserLabel.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
+        DialUserLabel.setText("Messages");
+
+        javax.swing.GroupLayout MessagesPanelLayout = new javax.swing.GroupLayout(MessagesPanel);
+        MessagesPanel.setLayout(MessagesPanelLayout);
+        MessagesPanelLayout.setHorizontalGroup(
+            MessagesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MessagesPanelLayout.createSequentialGroup()
                 .addComponent(EnvoiField, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(EnvoiBttn, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+            .addComponent(Messages)
+            .addGroup(MessagesPanelLayout.createSequentialGroup()
+                .addComponent(DialUserLabel)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        MessagesPanelLayout.setVerticalGroup(
+            MessagesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MessagesPanelLayout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addComponent(DialUserLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Messages, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                .addGap(179, 179, 179)
+                .addGroup(MessagesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(EnvoiField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(EnvoiBttn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        jSplitPane1.setRightComponent(jPanel2);
+        jSplitPane1.setRightComponent(MessagesPanel);
 
+        Userlist.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         Userlist.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        Userlist.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                UserlistValueChanged(evt);
+            }
         });
         jScrollPane2.setViewportView(Userlist);
 
@@ -115,7 +141,7 @@ public class ChatPage extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
 
         pack();
@@ -123,8 +149,37 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void EnvoiFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnvoiFieldActionPerformed
         // TODO add your handling code here:
+        this.send();
     }//GEN-LAST:event_EnvoiFieldActionPerformed
 
+    private void UserlistValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_UserlistValueChanged
+        // TODO add your handling code here:
+        //System.out.println(this.Userlist.getSelectedIndex());
+        //System.out.println(this.Userlist.getSelectedValue());
+        this.setOnDialUser();
+    }//GEN-LAST:event_UserlistValueChanged
+
+    private void EnvoiBttnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnvoiBttnActionPerformed
+        // TODO add your handling code here:
+        this.send();
+    }//GEN-LAST:event_EnvoiBttnActionPerformed
+
+    public void send(){
+        String content = this.EnvoiField.getText();
+        int idSrc = this.c.getId();
+        int idDst = this.Userlist.getSelectedIndex();
+        Date date = new Date();
+        
+        Message message = new Message(date, idSrc, idDst, content);
+            /*System.out.println(this.c.getUserList().size());
+            System.out.println(this.c.getUserList().get(idDst).getPseudo());
+            System.out.println(this.c.getUserList().get(idDst).connector != null);
+            this.c.getUserList().get(idDst).connector.out.writeObject(message);*/
+            this.c.sendMessage(message, this.c.getUserList().get(idDst));
+            System.out.println("Message sent: length = "+content.length()+" characters");
+
+    }
+    
     public void refreshUserlist(){
        // this.Userlist.setVisible(false);
         DefaultListModel<String> lm = new DefaultListModel<String>();
@@ -135,23 +190,45 @@ public class ChatPage extends javax.swing.JFrame {
         //this.Userlist.setVisible(true);
     }
     
+    public void setOnDialUser(){
+        String pseudo = this.Userlist.getSelectedValue();
+        int id = this.Userlist.getSelectedIndex();
+        
+        this.DialUserLabel.setText(pseudo);
+        ArrayList<Message> messages = this.c.getHistory().load(id);
+        
+        String content = "<html>";
+        for(Message message: messages){
+            content += "<p><b>"+this.c.getUserByID(message.getSourceId()).getPseudo() + ":</b> "+message.getContent();
+        }
+        content += "</html>";
+        
+        this.Messages.setText(content);
+    }
+    
     /**
      * @param args the command line arguments
      */
     public void open() {
         this.refreshUserlist();
-        this.c.setChatPage(this);
+        
+        //Select the first user if available
+        if(this.Userlist.getModel().getSize() > 0){
+            this.Userlist.setSelectedIndex(0);
+            this.setOnDialUser();
+        }
+
         
         this.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel DialUserLabel;
     private javax.swing.JButton EnvoiBttn;
     private javax.swing.JTextField EnvoiField;
+    private javax.swing.JLabel Messages;
+    private javax.swing.JPanel MessagesPanel;
     private javax.swing.JList<String> Userlist;
-    private javax.swing.JTextPane ZoneMessages;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables

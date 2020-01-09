@@ -192,6 +192,7 @@ public class LoginPage extends javax.swing.JFrame {
                 
                 //Open the new window and close this one
                 ChatPage cp = new ChatPage(this.controller);
+                this.controller.setChatPage(cp);
                 cp.open();
                 
                 this.setVisible(false);
