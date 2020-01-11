@@ -35,8 +35,10 @@ public class ActiveUserList {
 	 * @param u User which we must change the pseudo
 	 */
 	public boolean updateUser(int id, String pseudo) {
-           
-		return false;
+                boolean userPresent = this.getUser(id) != null;
+                if(userPresent)
+                    this.getUser(id).setPseudo(pseudo);
+		return userPresent;
 	}
 	/**
 	 * Test wether the pseudo is already used

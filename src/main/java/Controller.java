@@ -11,7 +11,8 @@ public class Controller {
 	private ActiveUserList userlist = new ActiveUserList();
 	private History history = new History();
 	public boolean allUserLoaded = false;
-        private ChatPage chatPage;
+        public ChatPage chatPage;
+        public InetAddress broadcast;
 	/** Create a controller
 	 * @param me User associated to the controller
 	 */
@@ -27,15 +28,36 @@ public class Controller {
 	/** Change own pseudo
 	 * @param pseudo New pseudo to give
 	 */
-	public boolean changePseudo(String pseudo) {
+	public int changePseudo(String pseudo) {
             boolean rs= userlist.checkPseudoAvailability(pseudo);
             
             if(!rs){
                 System.out.println("pseudo utilisé, choisir un autre");
-                return false;
+                return 1;
                 
             }
-            return true;
+            
+            //Send an UDP message to all active users
+            DatagramSocket dgramSocket;
+            try {
+                dgramSocket = new DatagramSocket();
+
+                //Create the datagram to send
+                String messageOut = "changePseudo|"+this.associatedUser.getId()+"|"+pseudo;
+
+                try {
+                    DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),this.broadcast, 1025);
+                    dgramSocket.send(outPacket); 
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    return 2;
+                }
+            } catch (SocketException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                return 2;
+            }
+            this.associatedUser.setPseudo(pseudo);
+            return 0;
 		
 	}
 
@@ -73,7 +95,34 @@ public class Controller {
 	 * @return Is true if the operation succeed
 	 */
 	public boolean disconnect() {
-		return false;
+            ArrayList<User> userlist = this.getUserList();
+            for(User u: userlist){
+                //System.out.println(u.getPseudo());
+               if(u.connector != null) 
+                   u.connector.close();
+            }
+            
+            //Send an UDP message to all active users
+            DatagramSocket dgramSocket;
+            try {
+                dgramSocket = new DatagramSocket();
+
+                //Create the datagram to send
+                String messageOut = "disconnect|"+this.associatedUser.getId();
+
+                try {
+                    DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),this.broadcast, 1025);
+                    dgramSocket.send(outPacket); 
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
+                }
+            } catch (SocketException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+            
+            return true;
 	}
 	
 	/** Log in and ask for system user identifiants
@@ -94,7 +143,7 @@ public class Controller {
 			ServerSocket server = new ServerSocket(port);
 			Socket link = server.accept();
 			System.out.println("ok");
-			Connector con = new Connector(history, server, link);
+			Connector con = new Connector(history, server, link, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,9 +207,11 @@ public class Controller {
 			this.connectAsClient(dest);
 		}
 		try {
-			dest.connector.out.writeObject(message);
+                    dest.connector.out.writeObject(message);
+                    this.history.add(message);
+                    this.chatPage.setOnDialUser();
 		} catch(IOException e){
-
+                    e.printStackTrace();
 		}
 		
 	}
@@ -171,12 +222,20 @@ public class Controller {
 	 * @param pseudo Pseudo of the user
 	 */
 	public void addUser(int id,String pseudo, InetAddress addr){
-		User u = new User(pseudo,id, addr);
-		this.userlist.addUser(u);
-                if(this.chatPage != null)
-                    chatPage.refreshUserlist();
-                //System.out.println(u.getPseudo() + " is added");
+            User u = new User(pseudo,id, addr);
+            this.userlist.addUser(u);
+
+            if(this.chatPage != null)
+                chatPage.refreshUserlist();
+           // System.out.println(u.getPseudo() + " is added");
+            //System.out.println(this.chatPage != null);
 	}
+        
+        public void updateUser(int id,String nouveauPseudo){
+            this.userlist.updateUser(id, nouveauPseudo);
+            if(this.chatPage != null)
+                chatPage.refreshUserlist();
+        }
 	
 	/**
 	 * Drop an user from the active user list
@@ -184,7 +243,11 @@ public class Controller {
 	 */
 	public void removeUser(int id){
 		User u = this.userlist.getUser(id);
-		this.userlist.removeUser(u);
+                if(u != null){
+                    if(u.connector != null)
+                        u.connector.close();
+                    this.userlist.removeUser(u);
+                }
                 if(this.chatPage != null)
                     this.chatPage.refreshUserlist();
 	}

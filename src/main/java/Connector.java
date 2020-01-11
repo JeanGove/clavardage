@@ -16,6 +16,7 @@ public class Connector extends Thread{
 	public ObjectOutputStream out;
 	private boolean active = true;
 	private History history;
+        private Controller c;
 
 	/**
 	 * Create a server connector object
@@ -23,11 +24,12 @@ public class Connector extends Thread{
 	 * @param sv Server socket
 	 * @param sk Client socket
 	 */
-	public Connector(History h, ServerSocket sv, Socket sk) {
+	public Connector(History h, ServerSocket sv, Socket sk,Controller c) {
 		this.server = sv;
 		this.sock = sk;
 		this.instantiate();
 		this.history = h;
+                this.c = c;
 	}
 
 	/**
@@ -75,13 +77,12 @@ public class Connector extends Thread{
 			} else {
 				this.sock.close();
 			}
-
+			// Disable the thread
+			this.active = false;
+                        
 			// Close data streams
 			this.in.close();
 			this.out.close();
-
-			// Disable the thread
-			this.active = false;
 		} catch (IOException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -103,8 +104,10 @@ public class Connector extends Thread{
 			 */
 			try {
 				Message m = (Message) this.in.readObject();
-			//	System.out.println(m.getContent());
+				//System.out.println(m.getContent());
 				this.history.add(m);
+                                this.c.chatPage.setOnDialUser();
+				//yield();
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

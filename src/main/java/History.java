@@ -17,7 +17,7 @@ public class History {
      * Load all stored messages
      * 
      * @param destUserId ID of the user
-	 * @return All message from the user with the number destUserId
+	 * @return All message from the user with the number destUserID
      */
 	public ArrayList<Message> load(int destUserId) {
 		ArrayList<Message> list = new ArrayList<Message>();
