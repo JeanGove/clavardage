@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.lang.Thread;
+import java.net.BindException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -11,6 +12,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 
 public class InformationThread extends Thread{
 	/** The port whereon the informations will be received */
@@ -80,10 +82,13 @@ public class InformationThread extends Thread{
                             System.out.println("Error");
                     }
 
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (BindException e2){
+                    String message = "Une instance de ClavardApp est déjà ouverte sur votre machine";
+                    System.out.println("E: "+message);
+                    this.controller.exception = 1;
+                }catch (SocketException se){
+                    se.printStackTrace();
+                }
 	}
 
 	/**
@@ -145,94 +150,94 @@ class DataOperation extends Thread{
 	/* Launch the thread */
 	public void run(){
                 
-		String[] argv = data.split("\\|");
-                System.out.println(argv[0]);
+            String[] argv = data.split("\\|");
+            System.out.println(argv[0]);
 
-		if(argv[0].equals("connected")){
-			//Get the ID and pseudo of the user requesting me for name and ID
-			String pseudo = argv[1];
-			int id = Integer.parseInt(argv[2]);
-			//Check if it's not the own User object we are attempting to add
-			if(!this.c.hasUser() || (this.c.hasUser() && id != this.c.getId() )){
-				c.addUser(id, pseudo, this.addr);
-			}
-			
-		}
+            if(argv[0].equals("connected")){
+                    //Get the ID and pseudo of the user requesting me for name and ID
+                    String pseudo = argv[1];
+                    int id = Integer.parseInt(argv[2]);
+                    //Check if it's not the own User object we are attempting to add
+                    if(!this.c.hasUser() || (this.c.hasUser() && id != this.c.getId() )){
+                            c.addUser(id, pseudo, this.addr);
+                    }
 
-		if(this.c.hasUser()){
-                    if(argv[0].equals("connecting")){
-                        if(this.c.getPseudo() != null){
-                            //Tell my ID to the newly connected machine
-                            String message = "connected|"+this.c.getPseudo()+"|"+this.c.getId();
-                            try{
-                                DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.addr, this.port);
+            }
 
-                                this.ds.send(outPacket);
-                            }catch(IOException e){
-                                    e.printStackTrace();
-                            }
+            if(this.c.hasUser()){
+                if(argv[0].equals("connecting")){
+                    if(this.c.getPseudo() != null){
+                        //Tell my ID to the newly connected machine
+                        String message = "connected|"+this.c.getPseudo()+"|"+this.c.getId();
+                        try{
+                            DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.addr, this.port);
+
+                            this.ds.send(outPacket);
+                        }catch(IOException e){
+                                e.printStackTrace();
                         }
                     }
-                    else if(argv[0].equals("createChatServer")){					
-                            System.out.println("createChatServer");
+                }
+                else if(argv[0].equals("createChatServer")){					
+                    System.out.println("createChatServer");
 
-                            try{
-                                    //Prepare the response 
-                                    DatagramSocket datas = new DatagramSocket();
-                                    String message = c.getId()+"|"+c.getPseudo();
-                                    //Send a packet to inform about which port can be used
-                                    DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
-                                    datas.send(dp);
-                                    //Pick up the used port
-                                    int newPort = datas.getLocalPort();
-                                    //Close the UDP socket
-                                    datas.close();
-                                    //Reopen the socket but in TCP
-                                    c.connectAsServer(newPort);
-                            }catch(Exception e){
-                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
-                            }
+                    try{
+                            //Prepare the response 
+                            DatagramSocket datas = new DatagramSocket();
+                            String message = c.getId()+"|"+c.getPseudo();
+                            //Send a packet to inform about which port can be used
+                            DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
+                            datas.send(dp);
+                            //Pick up the used port
+                            int newPort = datas.getLocalPort();
+                            //Close the UDP socket
+                            datas.close();
+                            //Reopen the socket but in TCP
+                            c.connectAsServer(newPort);
+                    }catch(Exception e){
+                            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
+                    }
 
-			}
-			else if(argv[0].equals("endChating")){
-                            System.out.println("endChating");
-			}
-			else if(argv[0].equals("disconnect")){
-                            //forme = disconnect|ID
-                            int id = Integer.parseInt(argv[1]);
+                }
+                else if(argv[0].equals("endChating")){
+                    System.out.println("endChating");
+                }
+                else if(argv[0].equals("disconnect")){
+                    //forme = disconnect|ID
+                    int id = Integer.parseInt(argv[1]);
 
-                            c.removeUser(id);
-                            System.out.println("disconnect");
-			}
-			else if(argv[0].equals("changePseudo")){
-                            //forme = changePseudo|ID|NewPseudo
-                            //Get informations from UDP message
-                            int id = Integer.parseInt(argv[1]);
-                            String newPseudo = argv[2];
-                            //Update the user
-                            this.c.updateUser(id, newPseudo);
-                            
-                            System.out.println("changePseudo");
-                        }
-			else if(argv[0].equals("whoIam")){
-                            //forme = whoIam|Name|ID
-                            String pseudo = argv[1];
-                            int id = Integer.parseInt(argv[2]);
+                    c.removeUser(id);
+                    System.out.println("disconnect");
+                }
+                else if(argv[0].equals("changePseudo")){
+                    //forme = changePseudo|ID|NewPseudo
+                    //Get informations from UDP message
+                    int id = Integer.parseInt(argv[1]);
+                    String newPseudo = argv[2];
+                    //Update the user
+                    this.c.updateUser(id, newPseudo);
 
-                            //Check if it's not the own User object we are attempting to add
-                            if(id != this.c.getId()){
-                                    c.addUser(id, pseudo, this.addr);
-                            }
-                            System.out.println("whoIam");
-			}
-			else{
-                            if(!argv[0].equals("connected"))
-                                System.out.println("Unknown function : "+argv[0]);
-			}
-		}
-		//Just to log what is sent
-		for(int i=1;i<argv.length;i++){
-			System.out.println(argv[i]);
-		}
+                    System.out.println("changePseudo");
+                }
+                else if(argv[0].equals("whoIam")){
+                    //forme = whoIam|Name|ID
+                    String pseudo = argv[1];
+                    int id = Integer.parseInt(argv[2]);
+
+                    //Check if it's not the own User object we are attempting to add
+                    if(id != this.c.getId()){
+                            c.addUser(id, pseudo, this.addr);
+                    }
+                    System.out.println("whoIam");
+                }
+                else{
+                    if(!argv[0].equals("connected"))
+                        System.out.println("Unknown function : "+argv[0]);
+                }
+            }
+            //Just to log what is sent
+            for(int i=1;i<argv.length;i++){
+                    System.out.println(argv[i]);
+            }
 	}
 }

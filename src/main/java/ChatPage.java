@@ -231,7 +231,8 @@ public class ChatPage extends javax.swing.JFrame {
             content += "<p><b>"+
                     nom +
                     ":</b> "+ message.getContent() +
-                    "<b><small style='opacity:0.2'>         "+ df.format(message.getDate())+"</small></b>"; 
+                    "<b><small style='opacity:0.2'>         "+ 
+                    df.format(message.getDate())+"</small></b>"; 
         }
         content += "</html>";
         

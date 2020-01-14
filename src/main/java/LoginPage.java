@@ -177,32 +177,38 @@ public class LoginPage extends javax.swing.JFrame {
     private void Se_connecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Se_connecterActionPerformed
         // TODO add your handling code here:
         String pseudo = this.PseudoTextArea.getText();
-        int ID = Integer.parseInt( this.IDTextArea.getText());
+        try{
+            int ID = Integer.parseInt( this.IDTextArea.getText());
 
-        System.out.println(this.controller != null);
-        
-        if(this.controller.login(ID, pseudo)){
-            try{
-                DatagramSocket ds = new DatagramSocket();
-                //Ask for system's users ID
-                String message = "connected|"+pseudo+"|"+ID;
-                DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast,1025);
-                //Send the message
-                ds.send(outPacket);
-                
-                //Open the new window and close this one
-                ChatPage cp = new ChatPage(this.controller);
-                this.controller.setChatPage(cp);
-                cp.open();
-                
-                this.setVisible(false);
-            }catch(Exception e){
-                e.printStackTrace();
+            System.out.println(this.controller != null);
+
+            if(this.controller.login(ID, pseudo)){
+                try{
+                    DatagramSocket ds = new DatagramSocket();
+                    //Ask for system's users ID
+                    String message = "connected|"+pseudo+"|"+ID;
+                    DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast,1025);
+                    //Send the message
+                    ds.send(outPacket);
+
+                    //Open the new window and close this one
+                    ChatPage cp = new ChatPage(this.controller);
+                    this.controller.setChatPage(cp);
+                    cp.open();
+
+                    this.setVisible(false);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }else{
+                //Pseudo is not available
+                this.ErrorText.setText("Le pseudo \""+pseudo+"\" n'est plus disponible");
+                this.ErrorPanel.setVisible(true);
             }
-                        
-        }else{
+        }catch(NumberFormatException e){
             //Pseudo is not available
-            this.ErrorText.setText("Le pseudo \""+pseudo+"\" n'est plus disponible");
+            this.ErrorText.setText("Veuillez un numéro pour l'ID personnel");
             this.ErrorPanel.setVisible(true);
         }
     }//GEN-LAST:event_Se_connecterActionPerformed

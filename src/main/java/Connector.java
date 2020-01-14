@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.lang.Thread;
 
-public class Connector extends Thread{
+public class Connector extends Thread {
 	private ServerSocket server;
 	private Socket sock;
 	/** Input stream used for communication for the user */
@@ -95,13 +95,8 @@ public class Connector extends Thread{
 	 * Run the read thread
 	 */
 	public void run() {
-		//System.out.println("running");
 
 		while (active) {
-			/*
-			 * int i = ois.readInt(); String today = (String) ois.readObject(); Date date =
-			 * (Date) ois.readObject();
-			 */
 			try {
 				Message m = (Message) this.in.readObject();
 				//System.out.println(m.getContent());

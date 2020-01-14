@@ -13,6 +13,7 @@ public class Controller {
 	public boolean allUserLoaded = false;
         public ChatPage chatPage;
         public InetAddress broadcast;
+        public int exception = 0;
 	/** Create a controller
 	 * @param me User associated to the controller
 	 */
