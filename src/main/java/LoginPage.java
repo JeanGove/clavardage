@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class LoginPage extends javax.swing.JFrame {
     
+    
     public Controller controller = null;
     private InetAddress broadcast;
 
