@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.lang.Thread;
+import java.util.ArrayList;
 
 public class Connector extends Thread {
 	private ServerSocket server;
@@ -19,7 +20,7 @@ public class Connector extends Thread {
         private Controller c;
 
 	/**
-	 * Create a server connector object
+	 * Create a server connecprivatetor object
 	 * 
 	 * @param sv Server socket
 	 * @param sk Client socket
@@ -91,6 +92,10 @@ public class Connector extends Thread {
 		return true;
 	}
 
+        public ArrayList<Message> getMessageList(){
+            return this.history.load(MIN_PRIORITY);
+        }
+        
 	/**
 	 * Run the read thread
 	 */
