@@ -9,7 +9,6 @@ public class User {
 	public InetAddress address;
 	public int infoPort = 1025;
 	public Connector connector = null;
-        
 	
 	
 	/**
