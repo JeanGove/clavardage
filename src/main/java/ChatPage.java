@@ -231,17 +231,18 @@ public class ChatPage extends javax.swing.JFrame {
      */
     public void setOnDialUser(){
         String pseudo = this.Userlist.getSelectedValue();
-        int id = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
-        
+        //int id = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
+        User u = this.c.getUserByID(this.Userlist.getSelectedIndex());
         DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         
         this.DialUserLabel.setText(pseudo);
-        ArrayList<Message> messages = this.c.getHistory().load(id);
+        //ArrayList<Message> messages = this.c.getHistory().load(id);
+        ArrayList<Message> messages = u.connector.getMessageList();
         
         String content = "<html>";
         for(Message message: messages){
-            User u = this.c.getUserByID(message.getSourceId());
-            String nom = (u != null)? u.getPseudo(): "Vous";
+            User user = this.c.getUserByID(message.getSourceId());
+            String nom = (user != null)? user.getPseudo(): "Vous";
             content += "<p><b>"+
                     nom +
                     ":</b> "+ message.getContent() +

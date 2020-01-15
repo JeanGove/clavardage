@@ -59,9 +59,6 @@
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="MessageScroller">
               <Properties>
-                <Property name="viewportBorder" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
-                </Property>
                 <Property name="autoscrolls" type="boolean" value="true"/>
               </Properties>
               <Constraints>
