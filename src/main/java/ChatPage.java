@@ -68,6 +68,7 @@ public class ChatPage extends javax.swing.JFrame {
         Messages = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         EnvoiField = new javax.swing.JTextField();
+        SendBttns = new javax.swing.JPanel();
         EnvoiBttn = new javax.swing.JButton();
         TopPanel = new javax.swing.JPanel();
         DialUserLabel = new javax.swing.JLabel();
@@ -86,7 +87,7 @@ public class ChatPage extends javax.swing.JFrame {
         jSplitPane1.setMinimumSize(new java.awt.Dimension(100, 83));
 
         MessagesPanel.setMinimumSize(new java.awt.Dimension(250, 83));
-        MessagesPanel.setLayout(new java.awt.BorderLayout());
+        MessagesPanel.setLayout(new java.awt.BorderLayout(0, 10));
 
         MessageScroller.setViewportBorder(null);
         MessageScroller.setAutoscrolls(true);
@@ -99,22 +100,25 @@ public class ChatPage extends javax.swing.JFrame {
         MessagesPanel.add(MessageScroller, java.awt.BorderLayout.CENTER);
 
         jPanel1.setToolTipText("");
-        jPanel1.setLayout(new java.awt.GridLayout(1, 0));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         EnvoiField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EnvoiFieldActionPerformed(evt);
             }
         });
-        jPanel1.add(EnvoiField);
+        jPanel1.add(EnvoiField, java.awt.BorderLayout.CENTER);
 
         EnvoiBttn.setText("Envoyer");
+        EnvoiBttn.setMargin(new java.awt.Insets(0, 20, 0, 20));
         EnvoiBttn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EnvoiBttnActionPerformed(evt);
             }
         });
-        jPanel1.add(EnvoiBttn);
+        SendBttns.add(EnvoiBttn);
+
+        jPanel1.add(SendBttns, java.awt.BorderLayout.EAST);
 
         MessagesPanel.add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
@@ -133,11 +137,12 @@ public class ChatPage extends javax.swing.JFrame {
             }
         });
         TopPanel.add(OptionsBttn, java.awt.BorderLayout.LINE_END);
-        OptionsBttn.getAccessibleContext().setAccessibleName("Options");
 
         MessagesPanel.add(TopPanel, java.awt.BorderLayout.NORTH);
 
         jSplitPane1.setRightComponent(MessagesPanel);
+
+        jScrollPane2.setMinimumSize(new java.awt.Dimension(200, 20));
 
         Userlist.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         Userlist.setModel(new javax.swing.AbstractListModel<String>() {
@@ -189,6 +194,9 @@ public class ChatPage extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowClosing
 
+    /**
+     * Send the message entered in the text field
+     */
     public void send(){
         String content = this.EnvoiField.getText();
         int idSrc = this.c.getId();
@@ -205,6 +213,9 @@ public class ChatPage extends javax.swing.JFrame {
         this.EnvoiField.setText("");
     }
     
+    /**
+     * Refresh the user list
+     */
     public void refreshUserlist(){
        // this.Userlist.setVisible(false);
         DefaultListModel<String> lm = new DefaultListModel<String>();
@@ -215,6 +226,9 @@ public class ChatPage extends javax.swing.JFrame {
         //this.Userlist.setVisible(true);
     }
     
+    /**
+     * Refresh the message panel according to the selcted user
+     */
     public void setOnDialUser(){
         String pseudo = this.Userlist.getSelectedValue();
         int id = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
@@ -242,7 +256,7 @@ public class ChatPage extends javax.swing.JFrame {
 
     
     /**
-     * @param args the command line arguments
+     * Open and launch the Chat window interface
      */
     public void open() {
         this.refreshUserlist();
@@ -269,6 +283,7 @@ public class ChatPage extends javax.swing.JFrame {
     private javax.swing.JLabel Messages;
     private javax.swing.JPanel MessagesPanel;
     private javax.swing.JButton OptionsBttn;
+    private javax.swing.JPanel SendBttns;
     private javax.swing.JPanel TopPanel;
     private javax.swing.JList<String> Userlist;
     private javax.swing.JPanel jPanel1;

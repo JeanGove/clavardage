@@ -6,7 +6,7 @@ public class User {
 	
 	private int id = -1;
 	private String pseudo;
-	public InetAddress address ;
+	public InetAddress address;
 	public int infoPort = 1025;
 	public Connector connector = null;
 	
@@ -32,6 +32,18 @@ public class User {
                 this.address= addr;
 	}
         
+        	        /**
+	 * Create a remote user
+	 * @param pseudo 
+	 * @param id
+         * @param port
+	 */
+	public User (String pseudo, int id, InetAddress addr, int port) {
+		this.pseudo = pseudo;
+		this.id =id;
+                this.address= addr;
+                this.infoPort = port;
+	}
 
 	/**
 	 * Get the pseudo
