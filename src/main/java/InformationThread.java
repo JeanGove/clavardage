@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 
-
 public class InformationThread extends Thread{
 	/** The port whereon the informations will be received */
 	public int port;

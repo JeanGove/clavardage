@@ -35,7 +35,6 @@ public class Application {
                 }else{
                     interf = args[0];
                 }
-                
 		// Stable
 		Controller c = new Controller();
 		

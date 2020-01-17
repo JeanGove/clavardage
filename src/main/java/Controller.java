@@ -21,9 +21,8 @@ public class Controller {
 		this.associatedUser = me;
 	}
 
-	public Controller(User me, ActiveUserList users){
-            this.associatedUser = me;
-            this.userlist = users;
+	public Controller(){
+
 	}
 	
    
@@ -162,7 +161,7 @@ public class Controller {
 			DatagramSocket dgramSocket= new DatagramSocket();
 
 			//criar um datagrama a enviar
-			String messageOut = "createChatServer|"+dest.getId()+"|"+dest.getPseudo();
+			String messageOut = "createChatServer";
                         
 			DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
 			dgramSocket.send(outPacket); // para enviar

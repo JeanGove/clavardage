@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,6 +12,7 @@ public class Message implements Serializable{
 	private int sourceId;
 	private int destId;
 	private String content;
+        private String type = "texte";
 	
 	/**
 	 * Create a message Object
@@ -27,11 +22,20 @@ public class Message implements Serializable{
 	 * @param content Message itself
 	 */
 	public Message(Date date, int sourceId, int destId,String content) {
-		this.date= date;
-		this.sourceId= sourceId;
-		this.destId= destId;
-		this.content= content;
+            this.init(date, sourceId, destId, content);
 	}
+        
+        public Message(String type,Date date, int sourceId, int destId,String content){
+            this.init(date, sourceId, destId, content);
+            this.type = type;
+        }
+        
+        private void init(Date date, int sourceId, int destId,String content){
+            this.content = content;
+            this.date = date;
+            this.sourceId = sourceId;
+            this.destId = destId;
+        }
 	
 	/**
 	 * Get the ID of the message emitter
@@ -65,5 +69,8 @@ public class Message implements Serializable{
 		return this.date;
 	}
 	
+        public String toString(){
+            return this.content;
+        }
 	
 }

@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.lang.Thread;
-import java.util.ArrayList;
 
 public class Connector extends Thread {
 	private ServerSocket server;
@@ -20,7 +19,7 @@ public class Connector extends Thread {
         private Controller c;
 
 	/**
-	 * Create a server connecprivatetor object
+	 * Create a server connector object
 	 * 
 	 * @param sv Server socket
 	 * @param sk Client socket
@@ -72,47 +71,43 @@ public class Connector extends Thread {
 	 * @return Is true if the operation succeed
 	 */
 	public boolean close() {
-		try {
-			if (this.server != null) {
-				this.server.close();
-			} else {
-				this.sock.close();
-			}
-			// Disable the thread
-			this.active = false;
-                        
-			// Close data streams
-			this.in.close();
-			this.out.close();
-		} catch (IOException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			return false;
-		}
-		return true;
+            try {
+                    if (this.server != null) {
+                            this.server.close();
+                    } else {
+                            this.sock.close();
+                    }
+                    // Disable the thread
+                    this.active = false;
+
+                    // Close data streams
+                    this.in.close();
+                    this.out.close();
+            } catch (IOException e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                    return false;
+            }
+            return true;
 	}
 
-        public ArrayList<Message> getMessageList(){
-            return this.history.load(MIN_PRIORITY);
-        }
-        
 	/**
 	 * Run the read thread
 	 */
 	public void run() {
 
-		while (active) {
-			try {
-				Message m = (Message) this.in.readObject();
-				//System.out.println(m.getContent());
-				this.history.add(m);
-                                this.c.chatPage.setOnDialUser();
-				//yield();
-			} catch (ClassNotFoundException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+            while (active) {
+                try {
+                    Message m = (Message) this.in.readObject();
+                    //System.out.println(m.getContent());
+                    this.history.add(m);
+                    this.c.chatPage.setOnDialUser();
+                    //yield();
+                } catch (ClassNotFoundException | IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 	}
 }
 /*
