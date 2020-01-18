@@ -1,11 +1,20 @@
+package Network;
+
 //package clavardage;
 
+import Database.Message;
+import Database.History;
+import Controller.Controller;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.lang.Thread;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Connector extends Thread {
 	private ServerSocket server;
@@ -103,28 +112,15 @@ public class Connector extends Thread {
                     this.history.add(m);
                     this.c.chatPage.setOnDialUser();
                     //yield();
-                } catch (ClassNotFoundException | IOException e) {
+                } catch (ClassNotFoundException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                } catch (EOFException | SocketException e1){ //While disconnected
+                    System.out.println("disconnected !");
+                    this.active = false;
+                } catch (IOException ex) {
+                    Logger.getLogger(Connector.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 	}
 }
-/*
-class MessageReader extends Thread{
-	private History history;
-	private ObjectOutputStream out;
-
-	public MessageReader(History h,ObjectOutputStream out){
-		this.history = h;
-		this.out = out;
-	}
-	
-	public void run(){
-		while(1 == 1){
-			synchronized(){
-			
-			}
-		}
-	}
-}*/

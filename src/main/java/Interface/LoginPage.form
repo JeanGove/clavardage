@@ -179,7 +179,7 @@
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" attributes="0">
-                  <Component id="RemoteServerIP" max="32767" attributes="0"/>
+                  <Component id="RemoteServerIPTextArea" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="Se_connecter1" min="-2" pref="116" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -192,7 +192,7 @@
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="RemoteServerIP" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="RemoteServerIPTextArea" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="Se_connecter1" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="0" pref="16" max="32767" attributes="0"/>
@@ -206,9 +206,9 @@
             <Property name="text" type="java.lang.String" value="Adresse du serveur distant"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="RemoteServerIP">
+        <Component class="javax.swing.JTextField" name="RemoteServerIPTextArea">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RemoteServerIPActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RemoteServerIPTextAreaActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="Se_connecter1">

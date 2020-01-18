@@ -1,4 +1,8 @@
+package Interface;
 
+
+import Interface.ChatPage;
+import Controller.Controller;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -29,9 +33,10 @@ public class LoginPage extends javax.swing.JFrame {
      * @param interf Interface used to communicate
      */
     public LoginPage(Controller c,String interf) {
+        //Get the controller associated to this interface
         this.controller = c;
-        this.getBroadcastAddress(interf);
-                /* Set the Nimbus look and feel */
+        
+        /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -55,6 +60,8 @@ public class LoginPage extends javax.swing.JFrame {
         //</editor-fold>
 
         initComponents();
+        //Get the broadcast address
+        this.getBroadcastAddress(interf);
     }
 
     /**
@@ -76,7 +83,7 @@ public class LoginPage extends javax.swing.JFrame {
         ErrorText = new javax.swing.JLabel();
         RemoteModePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        RemoteServerIP = new javax.swing.JTextField();
+        RemoteServerIPTextArea = new javax.swing.JTextField();
         Se_connecter1 = new javax.swing.JButton();
         RemoteModeCheckBox = new javax.swing.JCheckBox();
 
@@ -133,9 +140,9 @@ public class LoginPage extends javax.swing.JFrame {
 
         jLabel1.setText("Adresse du serveur distant");
 
-        RemoteServerIP.addActionListener(new java.awt.event.ActionListener() {
+        RemoteServerIPTextArea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RemoteServerIPActionPerformed(evt);
+                RemoteServerIPTextAreaActionPerformed(evt);
             }
         });
 
@@ -154,7 +161,7 @@ public class LoginPage extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(RemoteModePanelLayout.createSequentialGroup()
-                .addComponent(RemoteServerIP)
+                .addComponent(RemoteServerIPTextArea)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(Se_connecter1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
@@ -165,7 +172,7 @@ public class LoginPage extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(RemoteModePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(RemoteServerIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(RemoteServerIPTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Se_connecter1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 16, Short.MAX_VALUE))
         );
@@ -250,6 +257,7 @@ public class LoginPage extends javax.swing.JFrame {
                     //Ask for system's users ID
                     String message = "connected|"+pseudo+"|"+ID;
                     DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast,1025);
+                    
                     //Send the message
                     ds.send(outPacket);
 
@@ -284,9 +292,9 @@ public class LoginPage extends javax.swing.JFrame {
         this.refreshRemoteModeDisplay();
     }//GEN-LAST:event_RemoteModeCheckBoxActionPerformed
 
-    private void RemoteServerIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoteServerIPActionPerformed
+    private void RemoteServerIPTextAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoteServerIPTextAreaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_RemoteServerIPActionPerformed
+    }//GEN-LAST:event_RemoteServerIPTextAreaActionPerformed
 
     public void setController(Controller c){
         this.controller = c;
@@ -307,7 +315,7 @@ public class LoginPage extends javax.swing.JFrame {
     public void open(Controller c) {
         
         //this.controller = c;
-        this.ErrorPanel.setVisible(false);
+        if(this.broadcast != null)  this.ErrorPanel.setVisible(false);
         this.refreshRemoteModeDisplay();
 
         /* Create and display the form */
@@ -342,6 +350,17 @@ public class LoginPage extends javax.swing.JFrame {
                 }catch(NullPointerException ne){
                         //In case of interface without any address
                         System.out.println("ERR: No address defined on "+interf);
+                        
+                        this.ErrorText.setText("Aucune adresse n'est défini sur "+interf);
+                        this.ErrorPanel.setVisible(true);
+                        
+                        this.Se_connecter.setEnabled(false);
+                        this.Se_connecter1.setEnabled(false);
+                        this.RemoteModeCheckBox.setEnabled(false);
+                        this.PseudoTextArea.setEnabled(false);
+                        this.IDTextArea.setEnabled(false);
+                        this.RemoteServerIPTextArea.setEnabled(false);
+
                 }
         }catch(Exception e){
                 e.printStackTrace();
@@ -359,7 +378,7 @@ public class LoginPage extends javax.swing.JFrame {
     private javax.swing.JTextField PseudoTextArea;
     private javax.swing.JCheckBox RemoteModeCheckBox;
     private javax.swing.JPanel RemoteModePanel;
-    private javax.swing.JTextField RemoteServerIP;
+    private javax.swing.JTextField RemoteServerIPTextArea;
     private javax.swing.JButton Se_connecter;
     private javax.swing.JButton Se_connecter1;
     private javax.swing.JLabel jLabel1;

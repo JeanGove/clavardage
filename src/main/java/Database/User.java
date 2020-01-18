@@ -1,4 +1,7 @@
+package Database;
+
 //package clavardage;
+import Network.Connector;
 import java.net.*;
 
 
