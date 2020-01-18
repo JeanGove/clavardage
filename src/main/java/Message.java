@@ -68,9 +68,9 @@ public class Message implements Serializable{
 	public Date getDate(){
 		return this.date;
 	}
-	
-        public String toString(){
-            return this.content;
-        }
+		public String ToString(Message mess) {
+        return this.date + "" + this.sourceId +this.destId + this.content;
+    }
+
 	
 }

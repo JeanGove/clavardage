@@ -17,37 +17,43 @@ public class Database {
         Statement state = con.createStatement();
             // Créer la table
             String sql = "CREATE TABLE HISTORY NOT NULL" +
-                         "IdHistory      INTEGER NOT NULL" +
-                         "Message VARCHAR(5000) NOT NULL";
+                         "IdSource      INTEGER NOT NULL" +
+                         "IdDestination     INTEGER NOT NULL" +
+                         "Content VARCHAR(5000) NOT NULL" +
+                         "Date DATE     NOT NULL";
                          
           int rs= state.executeUpdate(sql);
           return rs;
            
     }
-    public int insertBD (Connection con, Message mess, int num) throws SQLException{
-        String string = mess.ToString(mess);
-        String query = "INSERT INTO HISTORY VALUES (num,mess.getSourceId(),mess.getDestId(),string)";
+    public int insertBD (Connection con, Message mess) throws SQLException{
+
+        String query = "INSERT INTO HISTORY VALUES (mess.getSourceId(),mess.getDestId(),getContent(),getDate())";
         Statement state = con.createStatement();
         int rs= state.executeUpdate(query); 
         return rs;
     }
     
-    public Message selectBD (Connection con, int idhis) throws SQLException{
-            ArrayList<String> list = new ArrayList<String>();
-            ArrayList<Message> list1 = new ArrayList<Message>();
-            String query = "SELECT Message "+ "FROM HISTORY where IdHistory = idhis";
+    public  ArrayList<Message> selectBD (Connection con, int sourceId, int destId) throws SQLException{
+            String content = null;
+            Date date = null;
+            ArrayList<Message> list = new ArrayList<Message>();
+            String query = "SELECT * "+ "FROM HISTORY where IdSource = sourceId AND IdDestination = destId";
             Statement state = con.createStatement();
             ResultSet rs = state.executeQuery(query);
             while(rs.next()){
-                list.add(rs.getString("Message"));
+                content= rs.getString("Content");
+                date = rs.getDate("Date");
+                Message mess= new Message(date, sourceId, destId, content);
+                list.add(mess);
             }
             
-       
+           return list;
     
     }
-    public void delectBD (Connection con, int idhis) throws SQLException{
+    public void delectBD (Connection con,int sourceId, int destId, Date date) throws SQLException{
          
-            String query= "DELETE FROM HISTORY where IdHistory= idhis";
+            String query= "DELETE FROM HISTORY where IdDestination = destId AND Date = date";
             Statement state = con.createStatement();
             int rs= state.executeUpdate(query);
     
