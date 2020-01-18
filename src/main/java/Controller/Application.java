@@ -1,3 +1,11 @@
+package Controller;
+
+import Database.Message;
+import Interface.LoginPage;
+import Database.User;
+import Database.History;
+import Network.InformationThread;
+import Controller.Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,5 +1,13 @@
+package Controller;
+
 //package clavardage;
 
+import Database.Message;
+import Database.User;
+import Database.History;
+import Interface.ChatPage;
+import Network.Connector;
+import Database.ActiveUserList;
 import java.net.*;
 import java.io.*;
 import java.util.*;

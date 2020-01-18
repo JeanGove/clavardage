@@ -1,3 +1,8 @@
+package Interface;
+
+import Database.Message;
+import Database.User;
+import Controller.Controller;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -7,6 +12,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JScrollBar;
 import javax.swing.ListModel;
 
 /*
@@ -133,11 +139,12 @@ public class ChatPage extends javax.swing.JFrame {
             }
         });
         TopPanel.add(OptionsBttn, java.awt.BorderLayout.LINE_END);
-        OptionsBttn.getAccessibleContext().setAccessibleName("Options");
 
         MessagesPanel.add(TopPanel, java.awt.BorderLayout.NORTH);
 
         jSplitPane1.setRightComponent(MessagesPanel);
+
+        jScrollPane2.setMinimumSize(new java.awt.Dimension(150, 20));
 
         Userlist.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         Userlist.setModel(new javax.swing.AbstractListModel<String>() {
@@ -206,37 +213,44 @@ public class ChatPage extends javax.swing.JFrame {
     }
     
     public void refreshUserlist(){
+        int selected = this.Userlist.getSelectedIndex();
        // this.Userlist.setVisible(false);
         DefaultListModel<String> lm = new DefaultListModel<String>();
         for(User u: this.c.getUserList()){
             lm.addElement(u.getPseudo());
         }
         this.Userlist.setModel(lm);
+        if(selected != -1) this.Userlist.setSelectedIndex(selected);
         //this.Userlist.setVisible(true);
     }
     
     public void setOnDialUser(){
-        String pseudo = this.Userlist.getSelectedValue();
-        int id = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
-        
-        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-        
-        this.DialUserLabel.setText(pseudo);
-        ArrayList<Message> messages = this.c.getHistory().load(id);
-        
-        String content = "<html>";
-        for(Message message: messages){
-            User u = this.c.getUserByID(message.getSourceId());
-            String nom = (u != null)? u.getPseudo(): "Vous";
-            content += "<p><b>"+
-                    nom +
-                    ":</b> "+ message +
-                    "<b><small style='opacity:0.2'>         "+ 
-                    df.format(message.getDate())+"</small></b>"; 
+        if(this.Userlist.getSelectedIndex()!= -1){
+            String pseudo = this.Userlist.getSelectedValue();
+            int id = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+
+            this.DialUserLabel.setText(pseudo);
+            ArrayList<Message> messages = this.c.getHistory().load(id);
+
+            String content = "<html>";
+            for(Message message: messages){
+                User u = this.c.getUserByID(message.getSourceId());
+                String nom = (u != null)? u.getPseudo(): "Vous";
+                content += "<p><b>"+
+                        nom +
+                        ":</b> "+ message +
+                        "<b><small style='opacity:0.2'>         "+ 
+                        df.format(message.getDate())+"</small></b></p>"; 
+            }
+            content += "<br><br></html>";
+
+            this.Messages.setText(content);
+            
+            JScrollBar scroll = this.MessageScroller.getVerticalScrollBar();
+            scroll.setValue(scroll.getMaximum());
         }
-        content += "</html>";
-        
-        this.Messages.setText(content);
     }
     
 
