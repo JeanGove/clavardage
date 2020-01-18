@@ -12,7 +12,7 @@ public class Main {
             String message2 = "start|1027";
             String message3 = "unstart|1028";
             try{
-                InetAddress host = InetAddress.getLocalHost();
+                InetAddress host = InetAddress.getByName(args[0]);
                 DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),host, 1025);
                                 DatagramPacket outPacket2 = new DatagramPacket(message2.getBytes(), message2.length(),host, 1025);
                                                 DatagramPacket outPacket3 = new DatagramPacket(message3.getBytes(), message3.length(),host, 1025);
