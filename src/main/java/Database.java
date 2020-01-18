@@ -23,6 +23,7 @@ public class Database {
                          "Date DATE     NOT NULL";
                          
           int rs= state.executeUpdate(sql);
+          state.close();
           return rs;
            
     }
@@ -31,7 +32,9 @@ public class Database {
         String query = "INSERT INTO HISTORY VALUES (mess.getSourceId(),mess.getDestId(),getContent(),getDate())";
         Statement state = con.createStatement();
         int rs= state.executeUpdate(query); 
+        state.close();
         return rs;
+
     }
     
     public  ArrayList<Message> selectBD (Connection con, int sourceId, int destId) throws SQLException{
@@ -47,7 +50,8 @@ public class Database {
                 Message mess= new Message(date, sourceId, destId, content);
                 list.add(mess);
             }
-            
+            rs.close();
+            state.close();
            return list;
     
     }
@@ -56,6 +60,7 @@ public class Database {
             String query= "DELETE FROM HISTORY where IdDestination = destId AND Date = date";
             Statement state = con.createStatement();
             int rs= state.executeUpdate(query);
+            state.close();
     
     }
 
