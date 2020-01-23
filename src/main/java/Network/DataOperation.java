@@ -18,11 +18,11 @@ import java.util.logging.Logger;
  * @author corentin
  */
 public class DataOperation extends Thread{
-	private	int port;
-	private InetAddress addr; //Nécessite peut-être un clone
-	private	String data;
-	private DatagramSocket ds;
-	private Controller c;
+	protected int port;
+	protected InetAddress addr; //Nécessite peut-être un clone
+	protected String data;
+	protected DatagramSocket ds;
+	protected Controller c;
 	
 		/**
 	 * Create a thread which have to treat all data received by UDP and do actions according to the content
@@ -76,7 +76,7 @@ public class DataOperation extends Thread{
 					System.out.println("whoIam");
 				}
 				else{
-					this.treatNonGenericSignals(argv);						
+					this.treatNonGenericSignals(data);						
 				}
 			}
 			//Just to log what is sent
@@ -143,14 +143,16 @@ public class DataOperation extends Thread{
 		String pseudo = argv[1];
 		int id = Integer.parseInt(argv[2]);
 		//Check if it's not the own User object we are attempting to add
-		if(!this.c.hasUser() || (this.c.hasUser() && id != this.c.getId() )){
+		if(id != -1 && (!this.c.hasUser() || (this.c.hasUser() && id != this.c.getId() ))){
 				this.c.addUser(id, pseudo, this.addr);
 		}
 	}
         
-        /**Where we add function associated to a module, for example Server module         * 
-         */
-        public void treatNonGenericSignals(String[] argv){
-            System.out.println("Unknown function : "+argv[0]);
-        }
+           /**Where we add function associated to a module, for example Server module         * 
+     */
+    public void treatNonGenericSignals(String data){
+        String[] argv = data.split("\\|");       
+        System.out.println("Unknown function : "+argv[0]);
+    }
+        
 }

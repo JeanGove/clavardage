@@ -2,10 +2,11 @@ package Database;
 
 //package clavardage;
 import Network.Connector;
+import java.io.Serializable;
 import java.net.*;
 
 
-public class User {
+public class User implements Serializable{
 	
 	private int id = -1;
 	private String pseudo;

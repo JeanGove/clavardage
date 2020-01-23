@@ -3,13 +3,24 @@ package Interface;
 
 import Interface.ChatPage;
 import Controller.Controller;
+import Database.ActiveUserList;
+import Tests.RemoteConnection;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -244,47 +255,12 @@ public class LoginPage extends javax.swing.JFrame {
     }//GEN-LAST:event_IDTextAreaActionPerformed
 
     private void Se_connecterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Se_connecterActionPerformed
-        // TODO add your handling code here:
-        String pseudo = this.PseudoTextArea.getText();
-        try{
-            int ID = Integer.parseInt( this.IDTextArea.getText());
-
-            System.out.println(this.controller != null);
-
-            if(this.controller.login(ID, pseudo)){
-                try{
-                    DatagramSocket ds = new DatagramSocket();
-                    //Ask for system's users ID
-                    String message = "connected|"+pseudo+"|"+ID;
-                    DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast,1025);
-                    
-                    //Send the message
-                    ds.send(outPacket);
-
-                    //Open the new window and close this one
-                    ChatPage cp = new ChatPage(this.controller);
-                    this.controller.setChatPage(cp);
-                    cp.open();
-
-                    this.setVisible(false);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-
-            }else{
-                //Pseudo is not available
-                this.ErrorText.setText("Le pseudo \""+pseudo+"\" n'est plus disponible");
-                this.ErrorPanel.setVisible(true);
-            }
-        }catch(NumberFormatException e){
-            //Pseudo is not available
-            this.ErrorText.setText("Veuillez un numéro pour l'ID personnel");
-            this.ErrorPanel.setVisible(true);
-        }
+        this.connect();
     }//GEN-LAST:event_Se_connecterActionPerformed
 
     private void Se_connecter1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Se_connecter1ActionPerformed
         // TODO add your handling code here:
+        this.connect();
     }//GEN-LAST:event_Se_connecter1ActionPerformed
 
     private void RemoteModeCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoteModeCheckBoxActionPerformed
@@ -296,6 +272,191 @@ public class LoginPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_RemoteServerIPTextAreaActionPerformed
 
+    public void connect(){
+        // Make sure that if the method connect is used that RemoteModeCheckbox is not checked and vice-versa
+        if(this.RemoteModeCheckBox.isSelected()) {
+            this.connectAsRemoteUser();
+        }else{
+            // TODO add your handling code here:
+            String pseudo = this.PseudoTextArea.getText();
+            try{
+                int ID = Integer.parseInt( this.IDTextArea.getText());
+
+                System.out.println(this.controller != null);
+                int retVal = this.controller.login(ID, pseudo);
+                if(retVal == 0){
+                    try{
+                        DatagramSocket ds = new DatagramSocket();
+                        //Ask for system's users ID
+                        String message = "connected|"+pseudo+"|"+ID;
+                        DatagramPacket outPacket = new DatagramPacket(message.getBytes(), message.length(),this.broadcast,1025);
+
+                        //Send the message
+                        ds.send(outPacket);
+
+                        this.goToChatPage();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+
+                }else if(retVal == 1){
+                    //Pseudo is not available
+                    this.ErrorText.setText("Le pseudo \""+pseudo+"\" n'est plus disponible");
+                    this.ErrorPanel.setVisible(true);
+                }else{
+                    //Pseudo is not available
+                    this.ErrorText.setText("Une session avec cet ID est déjà ouverte");
+                    this.ErrorPanel.setVisible(true);
+                }
+            }catch(NumberFormatException e){
+                //Pseudo is not available
+                this.ErrorText.setText("Veuillez un numéro pour l'ID personnel valide");
+                this.ErrorPanel.setVisible(true);
+            }
+        }
+    }
+    
+    public void connectAsRemoteUser(){
+        InetAddress addr;
+        String host = this.RemoteServerIPTextArea.getText();
+        try {
+            addr = InetAddress.getByName(host);
+            int port = 1025;
+
+            //Get the ID and pseudo of the user requesting me for name and ID
+            String pseudo = this.PseudoTextArea.getText();
+            try{
+                int id = Integer.parseInt(this.IDTextArea.getText());
+                try {
+                    //Prepare the response
+                    DatagramSocket datas = new DatagramSocket();
+                    String message = "remoteRequest|"+pseudo+"|"+id;
+
+                    //Send the request to the server
+                    DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), addr, port);
+                    datas.send(dp);
+
+                    //Receive the reply from the server
+                    byte[] buffer = new byte[256];
+
+                    DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
+                    datas.setSoTimeout(5000);
+                    try {
+
+                        datas.receive(inPacket);
+                        System.out.print(".");
+                        String data = new String(inPacket.getData(),0,inPacket.getLength());
+
+
+                        //System.out.println(str.split("\\|")[1]);
+                        int reply = Integer.parseInt(data.split("\\|")[1]);
+
+                        switch (reply) {
+                            case 0:
+                                //Reply to the server
+                                message = "remoteEstablished|"+pseudo+"|"+id;
+                                //Send the reply to the server
+                                dp = new DatagramPacket(message.getBytes(), message.length(), addr, port);
+                                datas.send(dp);
+                                //Wait for the last reply
+                                datas.receive(inPacket);
+                                System.out.println("REPLY: Connexion réussie");
+                                //Create a TCP connection to receive the list of active users
+                                int newPort = inPacket.getPort();
+                                System.out.println(newPort);
+                                TimeUnit.MILLISECONDS.sleep(500);
+                                Socket sock = new Socket(addr,newPort);
+                                //Receive the list of active users
+                                ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
+                                ActiveUserList aul = (ActiveUserList) ois.readObject();
+                                aul.reinitialize();
+                                System.out.println(aul.getLength());
+                                
+                                this.controller.loadActiveUserList(aul);
+                                this.goToChatPage();
+                                break;
+                            case 1:
+                                //Pseudo is not available
+                                this.ErrorText.setText("Le pseudo \""+pseudo+"\" n'est plus disponible");
+                                this.ErrorPanel.setVisible(true);
+                                break;
+                            case 2:
+                                //ID is not available
+                                this.ErrorText.setText("Une session avec cet ID est déjà ouverte");
+                                this.ErrorPanel.setVisible(true);
+                                break;
+                            default:
+                                System.out.println("ERR: Réponse incomprise"); 
+                                // An error occurred
+                                this.ErrorText.setText("Erreur réponse");
+                                this.ErrorPanel.setVisible(true);
+                                break;
+                        }
+                    }catch(SocketTimeoutException ste){
+                        System.out.println("ERR: Réponse non reçue");   
+                        
+                        // An error occurred
+                        this.ErrorText.setText("Aucune réponse du serveur");
+                        this.ErrorPanel.setVisible(true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("ERR: Problème lors de la réception du paquet"); 
+                                                
+                        // An error occurred
+                        this.ErrorText.setText("Une erreur est survenue");
+                        this.ErrorPanel.setVisible(true);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(RemoteConnection.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println("ERR: L'objet reçu ne correspond pas à une classe connue"); 
+                                                
+                        // An error occurred
+                        this.ErrorText.setText("Une erreur est survenue");
+                        this.ErrorPanel.setVisible(true);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
+                    } 
+
+
+                } catch (SocketException ex) {
+                    Logger.getLogger(RemoteConnection.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("ERR: Problème d'ouverture de socket, port: "+port);
+                                            
+                    // An error occurred
+                    this.ErrorText.setText("Connexion à "+host+":"+port+" impossible");
+                    this.ErrorPanel.setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(RemoteConnection.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("ERR: paquet non envoyé");
+                                                                    
+                    // An error occurred
+                    this.ErrorText.setText("Une erreur est survenue lors du transfert d'un paquet");
+                    this.ErrorPanel.setVisible(true);
+                }
+            }catch(NumberFormatException nfex){
+                //Pseudo is not available
+                this.ErrorText.setText("Veuillez un numéro pour l'ID personnel valide");
+                this.ErrorPanel.setVisible(true);
+            }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(RemoteConnection.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("ERR: nom d'hôte invalide");           
+                                                                               
+            // An error occurred
+            this.ErrorText.setText("Serveur "+host+" inconnu ou inaccessible");
+            this.ErrorPanel.setVisible(true);
+        }
+        
+    }
+    
+    private void goToChatPage() {
+        //Open the new window and close this one
+        ChatPage cp = new ChatPage(this.controller);
+        this.controller.setChatPage(cp);
+        cp.open();
+
+        this.setVisible(false);
+    }
+    
     public void setController(Controller c){
         this.controller = c;
     }

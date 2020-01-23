@@ -2,9 +2,10 @@ package Database;
 
 //package clavardage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ActiveUserList {
+public class ActiveUserList implements Serializable{
 	private ArrayList<User> userlist = new ArrayList<User>();
 	
 	/**
@@ -79,4 +80,27 @@ public class ActiveUserList {
 		}
 		return null;
 	}
+
+    public int checkUserAvailability(String pseudo,int id) {
+        for(User u :this.userlist){
+             if( u.getPseudo().equals(pseudo)){
+                 return 1;
+             }
+             if( u.getId() == id){
+                 return 2;
+             }
+
+         }
+        return 0;
+    }
+    
+    public void reinitialize(){
+        for(User u :this.userlist){
+            u.connector = null;
+        }
+    }
+
+    public int getLength() {
+        return this.userlist.size();
+    }
 }

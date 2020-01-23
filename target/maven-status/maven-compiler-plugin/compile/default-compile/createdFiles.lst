@@ -1,10 +1,16 @@
 Network/InformationThread.class
+Server/ServerInformationThread.class
 Network/DataOperation.class
 Interface/ChatPage$4.class
+Tests/RemoteConnection.class
 Interface/OptionPage$4.class
+Server/ServerDataOperation.class
 Network/Connector.class
 Controller/Application.class
 Interface/LoginPage$5.class
+Server/FowardConnector.class
+Interface/OptionPage$6.class
+Server/ServerController.class
 Database/History.class
 Interface/OptionPage$1.class
 Interface/OptionPage$2.class
@@ -13,7 +19,9 @@ Interface/ChatPage$2.class
 Database/ActiveUserList.class
 Interface/LoginPage$1.class
 Database/Message.class
+Interface/OptionPage$5.class
 Interface/ChatPage$5.class
+Database/Database.class
 Interface/LoginPage.class
 Interface/LoginPage$4.class
 Interface/OptionPage.class

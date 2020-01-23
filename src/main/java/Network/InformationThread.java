@@ -25,6 +25,8 @@ public class InformationThread extends Thread{
 	private DatagramSocket ds;
 	/** Broadcast address that will be used for this communication */
 	public InetAddress broadcast;
+        /** Network prefix**/
+        public short networkPrefix;
 	
 	/**
      * Create a Information thread object and use it as an UDP server with a port and an associated controller
@@ -66,13 +68,7 @@ public class InformationThread extends Thread{
                         //	System.out.println("waiting for packet");
                             try{
                                 ds.receive(inPacket);
-                                int port = inPacket.getPort();
-                                InetAddress addr = inPacket.getAddress();
-                                String data = new String(inPacket.getData(),0,inPacket.getLength());
-
-                                new DataOperation(controller, port, addr, data, ds).start();
-                                //inPacket.setData(new byte[256]);
-
+                                this.operateDatas(inPacket, ds);
                                 System.out.print(".");
                             }catch(SocketTimeoutException ste){
 
@@ -109,6 +105,7 @@ public class InformationThread extends Thread{
                                     InterfaceAddress ia = it.next();
                                     if(ia.getBroadcast() !=  null){
                                             this.broadcast = ia.getBroadcast();
+                                            this.networkPrefix = ia.getNetworkPrefixLength();
                                             this.controller.broadcast = this.broadcast;
                                             return this.broadcast;
                                     }
@@ -122,4 +119,13 @@ public class InformationThread extends Thread{
             }
             return null;
 	}
+        
+        //Overwritable
+        public void operateDatas(DatagramPacket inPacket,DatagramSocket ds){
+            int port = inPacket.getPort();
+            InetAddress addr = inPacket.getAddress();
+            String data = new String(inPacket.getData(),0,inPacket.getLength());
+
+            new DataOperation(this.controller, port, addr, data, ds).start();
+        }
 }

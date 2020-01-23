@@ -4,10 +4,16 @@
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Database/History.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Server/Server.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Interface/ChatPage.java
+/home/corentin/Documents/Travail/Clavardage/src/main/java/Database/Database.java
+/home/corentin/Documents/Travail/Clavardage/src/main/java/Server/ServerController.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Database/User.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Database/ActiveUserList.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Controller/Controller.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Interface/LoginPage.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Network/InformationThread.java
+/home/corentin/Documents/Travail/Clavardage/src/main/java/Tests/RemoteConnection.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Interface/OptionPage.java
+/home/corentin/Documents/Travail/Clavardage/src/main/java/Server/FowardConnector.java
 /home/corentin/Documents/Travail/Clavardage/src/main/java/Database/Message.java
+/home/corentin/Documents/Travail/Clavardage/src/main/java/Server/ServerInformationThread.java
+/home/corentin/Documents/Travail/Clavardage/src/main/java/Server/ServerDataOperation.java

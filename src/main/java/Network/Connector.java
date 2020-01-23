@@ -9,6 +9,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.lang.Thread;
@@ -16,7 +17,7 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Connector extends Thread {
+public class Connector extends Thread implements Serializable {
 	private ServerSocket server;
 	private Socket sock;
 	/** Input stream used for communication for the user */
@@ -123,4 +124,8 @@ public class Connector extends Thread {
                 }
             }
 	}
+        
+        public boolean isActive(){
+            return this.active;
+        }
 }

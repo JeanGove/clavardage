@@ -15,10 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Controller {
-	private User associatedUser;
-	private ActiveUserList userlist = new ActiveUserList();
-	private History history = new History();
-	public boolean allUserLoaded = false;
+	protected User associatedUser;
+	protected ActiveUserList userlist = new ActiveUserList();
+	protected History history = new History();
+	protected boolean allUserLoaded = false;
         public ChatPage chatPage;
         public InetAddress broadcast;
         public int exception = 0;
@@ -70,20 +70,25 @@ public class Controller {
 		
 	}
 
-	/** Try to log in to the system
+	/**  
+         * Try to log in to the system
 	 * @param id Own id
 	 * @param pseudo New pseudo to give
 	 * @return Is true if the pseudo is available and then the combination od id and pseudo is possible
 	 */
-	public boolean login(int id,String pseudo) {
-		boolean available = this.userlist.checkPseudoAvailability(pseudo);
-		if (available) {
+	public int login(int id,String pseudo) {
+		int returnedValue = this.userlist.checkUserAvailability(pseudo,id);
+		if (returnedValue == 0) {
 			this.associatedUser = new User(pseudo,id);
 			this.connect();
 		}
-		return available;
+		return returnedValue;
 	}
 	
+        public int checkUserAvailability(int id,String pseudo){
+            return this.userlist.checkUserAvailability(pseudo,id);
+        }
+        
 	/** Load an ActiveUserList
 	 * 
 	 * @param aul User list to load
@@ -287,7 +292,7 @@ public class Controller {
 		return this.history;
 	}
 
-	/**
+	/** @deprecated 
 	 * Receive a message from someone
 	 * @param message Message received
 	 * @param dest User whom it came from
@@ -303,7 +308,7 @@ public class Controller {
 		
 	}
 	
-	/**
+	/** @deprecated
 	 * Get the pseudo of the user associated to the controller
 	 * @return pseudo of the user associated to the controller
 	 */
@@ -323,7 +328,8 @@ public class Controller {
             this.chatPage = cp;
         }
         
-	/**
+	/** @deprecated
+         *
 	 * Start a routine
 	 */
 	public void start() {
@@ -332,6 +338,10 @@ public class Controller {
 		//Initialize send thread if more than 2 CPU
 		
 	}
+        
+        public ActiveUserList getActiveUserList() {
+            return this.userlist;
+        }
 
 	
 	
