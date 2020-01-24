@@ -135,66 +135,6 @@ public class ServerController extends Controller{
             return true;
     }
 
-    /** Establish a connection to an user while requested
-     * 
-     * @param dest User to link with a server-client TCP socket couple
-     */
-    public void connectAsServer(int port) {
-            try {
-                    ServerSocket server = new ServerSocket(port);
-                    Socket link = server.accept();
-                    System.out.println("ok");
-                    Connector con = new Connector(history, server, link, this);
-            } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-            }
-    }
-
-    /** Request and Establish a connection to an user
-     * 
-     * @param dest User to link with a server-client TCP socket couple
-     */
-    public void connectAsClient(User dest) {
-        try {
-            System.out.println("connectAsClient");
-            DatagramSocket dgramSocket= new DatagramSocket();
-
-            //criar um datagrama a enviar
-            String messageOut = "createChatServer";
-
-            DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
-            dgramSocket.send(outPacket); // para enviar
-
-            //System.out.println(messageOut);
-
-            byte[] buffer = new byte[256];
-            // para receber datagramas 
-            DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
-                                     System.out.println("ok");
-            // Para aceitar os datagramas 
-            dgramSocket.receive(inPacket);
-            // para recuperar a mensagem do buffer
-            //String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
-            int port = inPacket.getPort();
-            System.out.println("ok");
-
-            dgramSocket.close();
-
-            InetAddress address = InetAddress.getLocalHost();
-            // criamos o socket onde vamos nos connectar ao serveur com o sue 
-            Socket link = new Socket(dest.getAddress(),port);
-
-            // Create a Connector thanks to received datas
-            Connector con = new Connector(history, link);
-            dest.connector = con;
-
-                //link.close() ;
-        } catch(IOException e){
-                e.printStackTrace();
-        }
-    }
-
 
     /** Add an user to the active user list
      * 
@@ -242,6 +182,17 @@ public class ServerController extends Controller{
         super.removeUser(id);
         this.notifyRemoteUser("disconnect","", id);
         this.notifyLocalUser("disconnect","", id);
+    }
+    
+    public void linkUsers(int port,int ID){
+        Connector con1 = this.connectAsServer(port);
+        User user = this.getUserByID(ID);
+        Connector con2 = this.connectAsClient(user);
+        
+        //Ensure message forwarding
+        con1.link(con2);
+        con2.link(con1);
+       
     }
     
     public void notifyLocalUser(String content,String pseudo,int id){

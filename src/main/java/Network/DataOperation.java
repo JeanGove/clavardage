@@ -39,6 +39,7 @@ public class DataOperation extends Thread{
 		this.data = data;
 		this.ds = ds;
 		this.c = c;
+                System.out.println("notServerMode");
 	}
 
 	/* Launch the thread */
@@ -86,17 +87,17 @@ public class DataOperation extends Thread{
 	}
 	//The method are separated to overwrite them if necessary	
 
-	private void onChatEnding(String[] argv) {
+	protected void onChatEnding(String[] argv) {
 
 	}
 
-	private void onDisconnect(String[] argv) {
+	protected void onDisconnect(String[] argv) {
 		//forme = disconnect|ID
 		int id = Integer.parseInt(argv[1]);
 
 		this.c.removeUser(id);
 	}
-	private void onPseudoChange(String[] argv) {
+	protected void onPseudoChange(String[] argv) {
 		//forme = changePseudo|ID|NewPseudo
 		//Get informations from UDP message
 		int id = Integer.parseInt(argv[1]);
@@ -105,7 +106,7 @@ public class DataOperation extends Thread{
 		this.c.updateUser(id, newPseudo);
 	}
 
-	private void onCreateChatServer(String[] argv) {
+	protected void onCreateChatServer(String[] argv) {
 		try{
 			//Prepare the response 
 			DatagramSocket datas = new DatagramSocket();
@@ -124,7 +125,7 @@ public class DataOperation extends Thread{
 		}
 	}
 
-	private void onConnecting(String[] argv) {
+	protected void onConnecting(String[] argv) {
 		if(this.c.getPseudo() != null){
 			//Tell my ID to the newly connected machine
 			String message = "connected|"+this.c.getPseudo()+"|"+this.c.getId();

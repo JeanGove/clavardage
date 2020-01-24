@@ -2,8 +2,10 @@ package Database;
 
 //package clavardage;
 import Network.Connector;
+import Server.ForwardConnector;
 import java.io.Serializable;
 import java.net.*;
+
 
 
 public class User implements Serializable{
@@ -13,7 +15,7 @@ public class User implements Serializable{
 	public InetAddress address ;
 	public int infoPort = 1025;
 	public Connector connector = null;
-	
+	public ForwardConnector fc = null;
 	
 	/**
 	 * Create an user

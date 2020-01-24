@@ -30,14 +30,20 @@ public class ServerDataOperation extends Network.DataOperation{
         super(controller,port,addr,data,ds);
         this.isLocal = isLocal;
         this.c = controller;
+        System.out.println("serverMode");
     }
 
-   
-    private void onCreateChatServer(String[] argv) {
+    
+    @Override
+    protected void onCreateChatServer(String[] argv) {
+        int remoteID = Integer.parseInt(argv[1]);
+        String remotePseudo = argv[2];
+        //int id
+        
         try{
-            //Prepare the response 
+            //Prepare the response
             DatagramSocket datas = new DatagramSocket();
-            String message = c.getId()+"|"+c.getPseudo();
+            String message = remoteID+"|"+remotePseudo;
             //Send a packet to inform about which port can be used
             DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), this.addr, this.port);
             datas.send(dp);
@@ -46,7 +52,7 @@ public class ServerDataOperation extends Network.DataOperation{
             //Close the UDP socket
             datas.close();
             //Reopen the socket but in TCP
-            c.connectAsServer(newPort);
+            c.linkUsers(newPort,remoteID);
         }catch(Exception e){
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -54,23 +60,41 @@ public class ServerDataOperation extends Network.DataOperation{
 
 
 
+    @Override
     public void onConnected(String[] argv) {
         //Get the ID and pseudo of the user requesting me for name and ID
         String pseudo = argv[1];
         int id = Integer.parseInt(argv[2]);
         //Check if it's not the own User object we are attempting to add
-        /*if(!this.c.hasUser() || (this.c.hasUser() && id != this.c.getId() )){
-            this.c.addUser(id, pseudo, this.addr);
-        }*/
+        this.c.addUser(id, pseudo, this.addr);
+
+    }
+ 
+    @Override
+    public void onDisconnect(String[] argv) {
+        //Get the ID and pseudo of the user requesting me for name and ID
+        int id = Integer.parseInt(argv[1]);
+        //Check if it's not the own User object we are attempting to add
         if(isLocal){
-           // System.out.println("It's a local user");
-            this.c.addUser(id, pseudo, this.addr);
+            this.c.removeUser(id);
         }else{
-           // System.out.println("It's a remote user");
-            this.c.addUser(id, pseudo, this.addr);
+            this.c.removeRemoteUser(id);
         }
+
     }
     
+    public void onPseudoChange(String[] argv) {
+        //Get the ID and pseudo of the user requesting me for name and ID
+        String pseudo = argv[1];
+        int id = Integer.parseInt(argv[2]);
+        //Check if it's not the own User object we are attempting to add
+        if(isLocal){
+            this.c.updateUser(id, pseudo);
+        }else{
+            this.c.updateRemoteUser(id, pseudo);
+        }
+    }
+        
     public void onRemoteRequest(String[] argv){
         try {
             //Get the ID and pseudo of the user requesting me for name and ID

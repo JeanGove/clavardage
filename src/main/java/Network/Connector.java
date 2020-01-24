@@ -27,6 +27,7 @@ public class Connector extends Thread implements Serializable {
 	private boolean active = true;
 	private History history;
         private Controller c;
+        private Connector linked = null;
 
 	/**
 	 * Create a server connector object
@@ -100,6 +101,10 @@ public class Connector extends Thread implements Serializable {
             }
             return true;
 	}
+        
+        public void link(Connector c){
+            this.linked = c;
+        }
 
 	/**
 	 * Run the read thread
@@ -110,8 +115,13 @@ public class Connector extends Thread implements Serializable {
                 try {
                     Message m = (Message) this.in.readObject();
                     //System.out.println(m.getContent());
-                    this.history.add(m);
-                    this.c.chatPage.setOnDialUser();
+                    if(this.linked == null){
+                        this.history.add(m);
+                    }else{
+                        this.linked.out.writeObject(m);
+                    }
+                    if(this.c.chatPage != null)
+                        this.c.chatPage.setOnDialUser();
                     //yield();
                 } catch (ClassNotFoundException e) {
                     // TODO Auto-generated catch block

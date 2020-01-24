@@ -74,7 +74,7 @@ public class RemoteConnection {
                             //Receive the list of active users
                             ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
                             ActiveUserList aul = (ActiveUserList) ois.readObject();
-                            aul.reinitialize();
+                            aul.initialize(null);
                             break;
                         case 1:
                             System.out.println("REPLY: Pseudo déjà utilisé");

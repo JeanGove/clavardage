@@ -3,6 +3,7 @@ package Database;
 //package clavardage;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 public class ActiveUserList implements Serializable{
@@ -94,9 +95,10 @@ public class ActiveUserList implements Serializable{
         return 0;
     }
     
-    public void reinitialize(){
+    public void initialize(InetAddress broadcast){
         for(User u :this.userlist){
             u.connector = null;
+            u.address = broadcast;
         }
     }
 

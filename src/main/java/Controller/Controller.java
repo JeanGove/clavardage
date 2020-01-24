@@ -84,6 +84,7 @@ public class Controller {
 		}
 		return returnedValue;
 	}
+        
 	
         public int checkUserAvailability(int id,String pseudo){
             return this.userlist.checkUserAvailability(pseudo,id);
@@ -95,9 +96,8 @@ public class Controller {
 	 * @return Is true if the operation succeed
 	 */
 	public boolean loadActiveUserList(ActiveUserList aul) {
-		/*this.userList = aul
-		return this.userlist != null;*/
-		return false;
+            this.userlist = aul;
+            return true;
 	}
 
 	public boolean hasUser(){
@@ -123,7 +123,7 @@ public class Controller {
 
                 //Create the datagram to send
                 String messageOut = "disconnect|"+this.associatedUser.getId();
-
+                System.out.println(this.broadcast.getHostAddress());
                 try {
                     DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),this.broadcast, 1025);
                     dgramSocket.send(outPacket); 
@@ -152,63 +152,71 @@ public class Controller {
 	 * 
 	 * @param dest User to link with a server-client TCP socket couple
 	 */
-	public void connectAsServer(int port) {
+	public Connector connectAsServer(int port) {
 		try {
 			ServerSocket server = new ServerSocket(port);
 			Socket link = server.accept();
 			System.out.println("ok");
 			Connector con = new Connector(history, server, link, this);
+                        return con;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+                return null;
 	}
 
 	/** Request and Establish a connection to an user
 	 * 
 	 * @param dest User to link with a server-client TCP socket couple
 	 */
-    public void connectAsClient(User dest) {
-		try {
-            System.out.println("connectAsClient");
-			DatagramSocket dgramSocket= new DatagramSocket();
+        public Connector connectAsClient(User dest) {
+            try {
+                System.out.println("connectAsClient");
+                    DatagramSocket dgramSocket= new DatagramSocket();
 
-			//criar um datagrama a enviar
-			String messageOut = "createChatServer";
-                        
-			DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
-			dgramSocket.send(outPacket); // para enviar
+                    //criar um datagrama a enviar
+                    String messageOut;
+                    if(this.associatedUser != null) {
+                        messageOut = "createChatServer|"+dest.getId()+"|"+dest.getPseudo()+"|"+this.getId();
+                    }else{
+                        messageOut = "createChatServer|"+dest.getId()+"|"+dest.getPseudo();
+                    }
 
-			//System.out.println(messageOut);
+                    DatagramPacket outPacket= new DatagramPacket(messageOut.getBytes(), messageOut.length(),dest.getAddress(), 1025);
+                    dgramSocket.send(outPacket); // para enviar
 
-			byte[] buffer = new byte[256];
-			// para receber datagramas 
-			DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
-                                                 System.out.println("ok");
-			// Para aceitar os datagramas 
-			dgramSocket.receive(inPacket);
-			// para recuperar a mensagem do buffer
-			//String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
-			int port = inPacket.getPort();
- 			System.out.println("ok");
+                    //System.out.println(messageOut);
 
-			dgramSocket.close();
+                    byte[] buffer = new byte[256];
+                    // para receber datagramas 
+                    DatagramPacket inPacket = new DatagramPacket(buffer, buffer.length);
+                    System.out.println("ok");
+                    // Para aceitar os datagramas 
+                    dgramSocket.receive(inPacket);
+                    // para recuperar a mensagem do buffer
+                    //String messageIn = new String(inPacket.getData(), 0, inPacket.getLength());
+                    int port = inPacket.getPort();
+                    System.out.println("ok");
 
-			InetAddress address = InetAddress.getLocalHost();
-			// criamos o socket onde vamos nos connectar ao serveur com o sue 
-			Socket link = new Socket(dest.getAddress(),port);
+                    dgramSocket.close();
 
-			// Create a Connector thanks to received datas
-			Connector con = new Connector(history, link);
-			dest.connector = con;
-			
-			//link.close() ;
-		} catch(IOException e){
-			e.printStackTrace();
-		}
-             
+                    InetAddress address = InetAddress.getLocalHost();
+                    // criamos o socket onde vamos nos connectar ao serveur com o sue 
+                    Socket link = new Socket(dest.getAddress(),port);
 
-    }
+                    // Create a Connector thanks to received datas
+                    Connector con = new Connector(history, link);
+                    dest.connector = con;
+
+                    return con;
+                    //link.close() ;
+            } catch(IOException e){
+                    e.printStackTrace();
+            }
+            return null;
+
+        }
 	
 	/** Send a message
 	 * 
@@ -218,7 +226,7 @@ public class Controller {
 	public void sendMessage(Message message, User dest) {
 		//Créer le connector s'il est absent
 		if(dest.connector == null) {	
-			this.connectAsClient(dest);
+                    this.connectAsClient(dest);
 		}
 		try {
                     dest.connector.out.writeObject(message);
@@ -237,8 +245,10 @@ public class Controller {
 	 */
 	public void addUser(int id,String pseudo, InetAddress addr){
             User u = new User(pseudo,id, addr);
-            this.userlist.addUser(u);
+            if(this.checkUserAvailability(id, pseudo) == 0)
+                this.userlist.addUser(u);
 
+            
             if(this.chatPage != null)
                 chatPage.refreshUserlist();
            // System.out.println(u.getPseudo() + " is added");
@@ -258,7 +268,9 @@ public class Controller {
 	public void removeUser(int id){
 		User u = this.userlist.getUser(id);
                 if(u != null){
-                    if(u.connector != null)
+                    if(u.fc != null)
+                        u.fc.close();
+                    else if(u.connector != null)
                         u.connector.close();
                     this.userlist.removeUser(u);
                 }

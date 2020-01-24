@@ -63,7 +63,7 @@ public class ServerInformationThread extends Network.InformationThread{
         int port = inPacket.getPort();
         InetAddress addr = inPacket.getAddress();
         String data = new String(inPacket.getData(),0,inPacket.getLength());
-
+        //System.out.println("serverMode");
         new ServerDataOperation(this.controller, port, addr, data, ds,this.isLocal(addr)).start();
     }
 }

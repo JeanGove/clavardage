@@ -347,7 +347,8 @@ public class LoginPage extends javax.swing.JFrame {
                         System.out.print(".");
                         String data = new String(inPacket.getData(),0,inPacket.getLength());
 
-
+                        this.broadcast = InetAddress.getByName(this.RemoteServerIPTextArea.getText());
+                        
                         //System.out.println(str.split("\\|")[1]);
                         int reply = Integer.parseInt(data.split("\\|")[1]);
 
@@ -361,6 +362,9 @@ public class LoginPage extends javax.swing.JFrame {
                                 //Wait for the last reply
                                 datas.receive(inPacket);
                                 System.out.println("REPLY: Connexion réussie");
+                                
+                                this.controller.login(id, pseudo);
+                                
                                 //Create a TCP connection to receive the list of active users
                                 int newPort = inPacket.getPort();
                                 System.out.println(newPort);
@@ -369,9 +373,11 @@ public class LoginPage extends javax.swing.JFrame {
                                 //Receive the list of active users
                                 ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
                                 ActiveUserList aul = (ActiveUserList) ois.readObject();
-                                aul.reinitialize();
+                                aul.initialize(this.broadcast);
                                 System.out.println(aul.getLength());
                                 
+                                this.controller.broadcast = this.broadcast;
+        
                                 this.controller.loadActiveUserList(aul);
                                 this.goToChatPage();
                                 break;
