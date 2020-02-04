@@ -1,4 +1,4 @@
-# clavardage
+# ClavardApp
 Il est nécessaire de compiler le projet pour l'utiliser.
 Utilsez javac */*.java dans le répertoire java permet de le faire
 ## Mode client
