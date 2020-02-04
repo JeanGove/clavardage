@@ -58,7 +58,7 @@ public class Database {
             while(rs.next()){
                 content= rs.getString("Content");
                 date = rs.getDate("Date");
-                Message mess= new Message(date, sourceId, destId, content);
+                Message mess= new Message(date, sourceId, destId, content,"text");
                 list.add(mess);
             }
             rs.close();

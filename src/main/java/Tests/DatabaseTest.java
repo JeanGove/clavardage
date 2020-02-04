@@ -96,7 +96,7 @@ class Database{
             rs.close();
         } catch ( SQLException e ) {
             /* Gérer les éventuelles erreurs ici */
-              Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+              Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             if ( connexion != null )
                 try {

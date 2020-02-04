@@ -3,6 +3,9 @@ package Interface;
 import Database.Message;
 import Database.User;
 import Controller.Controller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,6 +72,8 @@ public class ChatPage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        FileFrame = new javax.swing.JFrame();
+        FileChooser = new javax.swing.JFileChooser();
         jSplitPane1 = new javax.swing.JSplitPane();
         MessagesPanel = new javax.swing.JPanel();
         MessageScroller = new javax.swing.JScrollPane();
@@ -77,12 +82,21 @@ public class ChatPage extends javax.swing.JFrame {
         ErrorMessage = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         EnvoiField = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
         EnvoiBttn = new javax.swing.JButton();
         TopPanel = new javax.swing.JPanel();
         DialUserLabel = new javax.swing.JLabel();
         OptionsBttn = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         Userlist = new javax.swing.JList<>();
+
+        FileChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FileChooserActionPerformed(evt);
+            }
+        });
+        FileFrame.getContentPane().add(FileChooser, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("ClavardApp");
@@ -116,14 +130,23 @@ public class ChatPage extends javax.swing.JFrame {
         ErrorMessage.setText("Vous");
         jPanel1.add(ErrorMessage);
 
-        jPanel2.setLayout(new java.awt.GridLayout(1, 0));
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
         EnvoiField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EnvoiFieldActionPerformed(evt);
             }
         });
-        jPanel2.add(EnvoiField);
+        jPanel2.add(EnvoiField, java.awt.BorderLayout.CENTER);
+
+        jButton1.setText("Fichier");
+        jButton1.setName(""); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton1);
 
         EnvoiBttn.setText("Envoyer");
         EnvoiBttn.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +154,9 @@ public class ChatPage extends javax.swing.JFrame {
                 EnvoiBttnActionPerformed(evt);
             }
         });
-        jPanel2.add(EnvoiBttn);
+        jPanel3.add(EnvoiBttn);
+
+        jPanel2.add(jPanel3, java.awt.BorderLayout.EAST);
 
         jPanel1.add(jPanel2);
 
@@ -209,6 +234,38 @@ public class ChatPage extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowClosing
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        this.FileFrame.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void FileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileChooserActionPerformed
+        FileInputStream fis = null;
+        try {
+            // TODO add your handling code here:
+            File file = this.FileChooser.getSelectedFile();
+            System.out.println(file.getPath());
+            this.FileChooser.setVisible(false);
+            String content = "";
+            fis = new FileInputStream(file);
+            byte[] b = new byte[(int) file.length()];
+            fis.read(b);
+            
+            content = new String(b);
+            this.sendMessage(content,"file",file.getName());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException ex) {
+                Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_FileChooserActionPerformed
+
     public void handleRemoteServerDisconnection(){
         if(this.remoted){
             //Lock the interface
@@ -227,11 +284,16 @@ public class ChatPage extends javax.swing.JFrame {
     
     public void send(){
         String content = this.EnvoiField.getText();
+        this.sendMessage(content,"text",null);
+    }
+    
+    public void sendMessage(String content,String type,String name){
         int idSrc = this.c.getId();
         int idDst = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
         Date date = new Date();
         
-        Message message = new Message(date, idSrc, idDst, content);
+        Message message = new Message(date, idSrc, idDst, content, type,name);
+        
         /*System.out.println(this.c.getUserList().size());
         System.out.println(this.c.getUserList().get(idDst).getPseudo());
         System.out.println(this.c.getUserList().get(idDst).connector != null);
@@ -323,14 +385,18 @@ public class ChatPage extends javax.swing.JFrame {
     private javax.swing.JButton EnvoiBttn;
     private javax.swing.JTextField EnvoiField;
     private javax.swing.JLabel ErrorMessage;
+    private javax.swing.JFileChooser FileChooser;
+    private javax.swing.JFrame FileFrame;
     private javax.swing.JScrollPane MessageScroller;
     private javax.swing.JLabel Messages;
     private javax.swing.JPanel MessagesPanel;
     private javax.swing.JButton OptionsBttn;
     private javax.swing.JPanel TopPanel;
     private javax.swing.JList<String> Userlist;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables

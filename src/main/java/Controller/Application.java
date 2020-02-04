@@ -128,7 +128,7 @@ class CLI{
 				String content = entered.split("send [0-9]* ")[1];
 				User u = this.controller.getUserList().get(iddest);
 				Date date = new Date();
-				Message mess = new Message(date,idsource,iddest,content);
+				Message mess = new Message(date,idsource,iddest,content,"text");
 				controller.sendMessage(mess,u);
 			}else if(command.equals("read")){
 				System.out.println(command);
