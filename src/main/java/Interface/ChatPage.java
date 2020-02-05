@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollBar;
 import javax.swing.ListModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -83,6 +84,7 @@ public class ChatPage extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         EnvoiField = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
+        sendPicture = new javax.swing.JButton();
         sendFile = new javax.swing.JButton();
         EnvoiBttn = new javax.swing.JButton();
         TopPanel = new javax.swing.JPanel();
@@ -113,7 +115,6 @@ public class ChatPage extends javax.swing.JFrame {
         MessageScroller.setViewportBorder(null);
         MessageScroller.setAutoscrolls(true);
 
-        Messages.setText("Messages");
         Messages.setToolTipText("");
         Messages.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         MessageScroller.setViewportView(Messages);
@@ -137,6 +138,15 @@ public class ChatPage extends javax.swing.JFrame {
             }
         });
         jPanel2.add(EnvoiField, java.awt.BorderLayout.CENTER);
+
+        sendPicture.setText("Image");
+        sendPicture.setEnabled(false);
+        sendPicture.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendPictureActionPerformed(evt);
+            }
+        });
+        jPanel3.add(sendPicture);
 
         sendFile.setText("Fichier");
         sendFile.setName(""); // NOI18N
@@ -235,6 +245,29 @@ public class ChatPage extends javax.swing.JFrame {
 
     private void sendFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendFileActionPerformed
         // TODO add your handling code here:
+        this.sendFile("file");
+    }//GEN-LAST:event_sendFileActionPerformed
+
+    private void FileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileChooserActionPerformed
+        
+    }//GEN-LAST:event_FileChooserActionPerformed
+
+    private void sendPictureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendPictureActionPerformed
+        // TODO add your handling code here:
+        this.sendFile("image");
+    }//GEN-LAST:event_sendPictureActionPerformed
+
+    private void sendFile(String type){
+        
+
+        if("image".equals(type)){
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Images",
+                    "jpg", "png", "svg", "ico", "gif");
+            this.FileChooser.setFileFilter(filter);
+        }else{
+           // FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & GIF Images", "jpg", "gif");
+            this.FileChooser.setFileFilter(null);
+        }
         
         this.FileChooser.showOpenDialog(jPanel1);
         FileInputStream fis = null;
@@ -247,8 +280,8 @@ public class ChatPage extends javax.swing.JFrame {
             byte[] content = new byte[(int) file.length()];
             fis.read(content);
             
-            //Compare to known picture formats
-            this.sendMessage(content,"file",file.getName());
+            
+            this.sendMessage(content,type,file.getName());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -260,12 +293,8 @@ public class ChatPage extends javax.swing.JFrame {
                 Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_sendFileActionPerformed
-
-    private void FileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileChooserActionPerformed
-        
-    }//GEN-LAST:event_FileChooserActionPerformed
-
+    }
+    
     public void handleRemoteServerDisconnection(){
         if(this.remoted){
             //Lock the interface
@@ -399,5 +428,6 @@ public class ChatPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JButton sendFile;
+    private javax.swing.JButton sendPicture;
     // End of variables declaration//GEN-END:variables
 }

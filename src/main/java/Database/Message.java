@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +41,7 @@ public class Message implements Serializable{
         
         public Message(Date date, int sourceId, int destId,byte[] content, String type,String name){
             this.init(date, sourceId, destId, content,name);
+            
             this.type = type;
         }
         
@@ -80,11 +83,35 @@ public class Message implements Serializable{
                 }else if("image".equals(this.type)){
                     File file = new File(Application.option.get("downloadPath").value,this.name);
                     
-                    return "<img width='400' src='file://"+file.getAbsolutePath()+"'>"+
-                            "</img><small>Enregistré dans "+file.getAbsolutePath()+"</small>";
+                    return "<img width='400' src='file://"+encodeURL(file.getAbsolutePath())+"'>"+
+                            "</img><br><small>Enregistré dans "+file.getAbsolutePath()+"</small>";
                 }
                 return new String(this.content);
 	}
+        
+        public String encodeURL(String src){
+            String url = "";
+            
+            String[] srcs = src.split("(\\/|\\\\)");
+            for(int i=0; i< srcs.length -1; i++){
+                try {
+                    url += URLEncoder.encode(srcs[i], "UTF-8");
+                    if(src.matches("C:\\\\")){
+                        url +="\\"; //In case of Windows usage
+                    }else{
+                        url += "/"; //On UNIX based OS
+                    }
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(Message.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            try {
+                url += URLEncoder.encode(srcs[srcs.length -1], "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Message.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return url;
+        }
         
         public void DownloadFile(){
             if(!this.downloaded){
