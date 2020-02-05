@@ -83,7 +83,7 @@ public class ChatPage extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         EnvoiField = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        sendFile = new javax.swing.JButton();
         EnvoiBttn = new javax.swing.JButton();
         TopPanel = new javax.swing.JPanel();
         DialUserLabel = new javax.swing.JLabel();
@@ -96,7 +96,6 @@ public class ChatPage extends javax.swing.JFrame {
                 FileChooserActionPerformed(evt);
             }
         });
-        FileFrame.getContentPane().add(FileChooser, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("ClavardApp");
@@ -114,7 +113,7 @@ public class ChatPage extends javax.swing.JFrame {
         MessageScroller.setViewportBorder(null);
         MessageScroller.setAutoscrolls(true);
 
-        Messages.setText("Ici, s'afficheront les messages");
+        Messages.setText("Messages");
         Messages.setToolTipText("");
         Messages.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         MessageScroller.setViewportView(Messages);
@@ -139,14 +138,14 @@ public class ChatPage extends javax.swing.JFrame {
         });
         jPanel2.add(EnvoiField, java.awt.BorderLayout.CENTER);
 
-        jButton1.setText("Fichier");
-        jButton1.setName(""); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        sendFile.setText("Fichier");
+        sendFile.setName(""); // NOI18N
+        sendFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                sendFileActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton1);
+        jPanel3.add(sendFile);
 
         EnvoiBttn.setText("Envoyer");
         EnvoiBttn.addActionListener(new java.awt.event.ActionListener() {
@@ -234,24 +233,21 @@ public class ChatPage extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowClosing
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void sendFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendFileActionPerformed
         // TODO add your handling code here:
-        this.FileFrame.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void FileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileChooserActionPerformed
+        
+        this.FileChooser.showOpenDialog(jPanel1);
         FileInputStream fis = null;
         try {
             // TODO add your handling code here:
             File file = this.FileChooser.getSelectedFile();
             System.out.println(file.getPath());
-            this.FileChooser.setVisible(false);
-            String content = "";
-            fis = new FileInputStream(file);
-            byte[] b = new byte[(int) file.length()];
-            fis.read(b);
             
-            content = new String(b);
+            fis = new FileInputStream(file);
+            byte[] content = new byte[(int) file.length()];
+            fis.read(content);
+            
+            //Compare to known picture formats
             this.sendMessage(content,"file",file.getName());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -264,6 +260,10 @@ public class ChatPage extends javax.swing.JFrame {
                 Logger.getLogger(ChatPage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }//GEN-LAST:event_sendFileActionPerformed
+
+    private void FileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileChooserActionPerformed
+        
     }//GEN-LAST:event_FileChooserActionPerformed
 
     public void handleRemoteServerDisconnection(){
@@ -284,10 +284,10 @@ public class ChatPage extends javax.swing.JFrame {
     
     public void send(){
         String content = this.EnvoiField.getText();
-        this.sendMessage(content,"text",null);
+        this.sendMessage(content.getBytes(),"text",null);
     }
     
-    public void sendMessage(String content,String type,String name){
+    public void sendMessage(byte[] content,String type,String name){
         int idSrc = this.c.getId();
         int idDst = this.c.getUserList().get(this.Userlist.getSelectedIndex()).getId();
         Date date = new Date();
@@ -299,7 +299,7 @@ public class ChatPage extends javax.swing.JFrame {
         System.out.println(this.c.getUserList().get(idDst).connector != null);
         this.c.getUserList().get(idDst).connector.out.writeObject(message);*/
         this.c.sendMessage(message, this.c.getUserList().get(this.Userlist.getSelectedIndex()));
-        System.out.println("Message sent: length = "+content.length()+" characters");
+       // System.out.println("Message sent: length = "+content.length()+" characters");
         this.EnvoiField.setText("");
     }
     
@@ -393,11 +393,11 @@ public class ChatPage extends javax.swing.JFrame {
     private javax.swing.JButton OptionsBttn;
     private javax.swing.JPanel TopPanel;
     private javax.swing.JList<String> Userlist;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JButton sendFile;
     // End of variables declaration//GEN-END:variables
 }

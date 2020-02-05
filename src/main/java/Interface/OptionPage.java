@@ -4,6 +4,7 @@ package Interface;
 import Controller.Application;
 import Controller.Configuration.Parameter;
 import Controller.Controller;
+import javax.swing.JFileChooser;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -57,6 +58,7 @@ public class OptionPage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        chooser = new javax.swing.JFileChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -74,6 +76,9 @@ public class OptionPage extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         ChangeConsideredAtReboot = new javax.swing.JLabel();
         RemoteMode = new javax.swing.JCheckBox();
+        DLPath = new javax.swing.JLabel();
+        dlpathLabel = new javax.swing.JLabel();
+        searchDownloadPath = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         Save = new javax.swing.JButton();
 
@@ -123,7 +128,7 @@ public class OptionPage extends javax.swing.JFrame {
         jLabel6.setText("Historique");
 
         jLabel7.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
-        jLabel7.setText("Pseudo");
+        jLabel7.setText("Discussions");
 
         jLabel8.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         jLabel8.setText("Mode distant");
@@ -139,6 +144,17 @@ public class OptionPage extends javax.swing.JFrame {
             }
         });
 
+        DLPath.setText("Dossier de téléchargement");
+
+        dlpathLabel.setText("/home/$USER");
+
+        searchDownloadPath.setText("Parcourir...");
+        searchDownloadPath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchDownloadPathActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -146,7 +162,6 @@ public class OptionPage extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
                     .addComponent(jLabel7)
                     .addComponent(jLabel8)
                     .addComponent(ChangeConsideredAtReboot)
@@ -156,19 +171,29 @@ public class OptionPage extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(RemoteMode)
                             .addGap(6, 6, 6))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addGap(12, 12, 12)
-                            .addComponent(AlreadyTakenNameLabel))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(PseudoField, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(PseudoCheckBttn))
                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(HistoryPath, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(HistoryServerIP, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel6)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(12, 12, 12)
+                                    .addComponent(AlreadyTakenNameLabel)))
+                            .addGap(249, 249, 249))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(dlpathLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(searchDownloadPath))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(PseudoField, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(PseudoCheckBttn))))
+                    .addComponent(DLPath))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -185,8 +210,14 @@ public class OptionPage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(AlreadyTakenNameLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
+                .addComponent(DLPath)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchDownloadPath)
+                    .addComponent(dlpathLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(HistoryPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -204,7 +235,7 @@ public class OptionPage extends javax.swing.JFrame {
                     .addComponent(RemoteMode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ChangeConsideredAtReboot)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jScrollPane1.setViewportView(jPanel1);
@@ -275,6 +306,20 @@ public class OptionPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_HistoryServerIPActionPerformed
 
+    private void searchDownloadPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchDownloadPathActionPerformed
+        // TODO add your handling code here:
+        //Set the only directories mode
+        this.chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        //Get the value
+        int returnVal = this.chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+           this.dlpathLabel.setText(chooser.getSelectedFile().getAbsolutePath() );
+        }
+    }//GEN-LAST:event_searchDownloadPathActionPerformed
+
+
+    
     private void changePseudo(){
         //Try to change pseudo
         String pseudo = this.PseudoField.getText();
@@ -307,6 +352,8 @@ public class OptionPage extends javax.swing.JFrame {
             this.HistoryServerIP.setText(p.value);
         if((p = Application.option.get("remoteAddr")) != null)
             this.RemoteIP.setText(p.value);
+        if((p = Application.option.get("downloadPath")) != null)
+            this.dlpathLabel.setText(p.value);
         if((p = Application.option.get("remoteMode")) != null)
             this.RemoteMode.setSelected(p.value.equals("true"));
     }
@@ -316,6 +363,8 @@ public class OptionPage extends javax.swing.JFrame {
         if(!this.HistoryPath.getText().equals("Valeur par défaut"))
             Application.option.add(new Parameter("historyPath",this.HistoryPath.getText()));
         Application.option.add(new Parameter("historyAddr",this.HistoryServerIP.getText()));
+        if(!this.dlpathLabel.getText().equals("/home/$USER"))
+            Application.option.add(new Parameter("downloadPath",this.dlpathLabel.getText()));
         Application.option.add(new Parameter("remoteAddr",this.RemoteIP.getText()));
         Application.option.add(new Parameter("remoteMode",this.RemoteMode.isSelected()+""));
       //  Application.option.save();
@@ -327,6 +376,8 @@ public class OptionPage extends javax.swing.JFrame {
     public void open() {
         this.jScrollPane1.getViewport().setOpaque(false);
         
+        this.prefillForm();
+        
         this.AlreadyTakenNameLabel.setVisible(false);
         this.PseudoField.setText(this.c.getPseudo());
         
@@ -336,6 +387,7 @@ public class OptionPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AlreadyTakenNameLabel;
     private javax.swing.JLabel ChangeConsideredAtReboot;
+    private javax.swing.JLabel DLPath;
     private javax.swing.JTextField HistoryPath;
     private javax.swing.JTextField HistoryServerIP;
     private javax.swing.JButton PseudoCheckBttn;
@@ -343,6 +395,8 @@ public class OptionPage extends javax.swing.JFrame {
     private javax.swing.JTextField RemoteIP;
     private javax.swing.JCheckBox RemoteMode;
     private javax.swing.JButton Save;
+    private javax.swing.JFileChooser chooser;
+    private javax.swing.JLabel dlpathLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -353,5 +407,6 @@ public class OptionPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton searchDownloadPath;
     // End of variables declaration//GEN-END:variables
 }

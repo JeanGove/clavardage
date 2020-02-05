@@ -38,6 +38,12 @@ public class OptionSaver {
             }
         } catch (FileNotFoundException fnf){
             this.f.createNewFile();
+            
+            //Define a default path for donloaded files
+            String path = "downloadPath="+System.getProperty("user.home");
+            
+            FileOutputStream fos = new FileOutputStream(this.f);
+            fos.write(path.getBytes());
         }
     }
     
