@@ -115,6 +115,7 @@ public class ChatPage extends javax.swing.JFrame {
         MessageScroller.setViewportBorder(null);
         MessageScroller.setAutoscrolls(true);
 
+        Messages.setText("Message");
         Messages.setToolTipText("");
         Messages.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         MessageScroller.setViewportView(Messages);
@@ -122,13 +123,13 @@ public class ChatPage extends javax.swing.JFrame {
         MessagesPanel.add(MessageScroller, java.awt.BorderLayout.CENTER);
 
         jPanel1.setToolTipText("");
-        jPanel1.setLayout(new java.awt.GridLayout(2, 0));
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         ErrorMessage.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         ErrorMessage.setForeground(javax.swing.UIManager.getDefaults().getColor("PasswordField.selectionBackground"));
         ErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ErrorMessage.setText("Vous");
-        jPanel1.add(ErrorMessage);
+        jPanel1.add(ErrorMessage, java.awt.BorderLayout.NORTH);
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -148,7 +149,9 @@ public class ChatPage extends javax.swing.JFrame {
         });
         jPanel3.add(sendPicture);
 
-        sendFile.setText("Fichier");
+        sendFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interface/file.png"))); // NOI18N
+        sendFile.setToolTipText("Fichier");
+        sendFile.setEnabled(false);
         sendFile.setName(""); // NOI18N
         sendFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,6 +160,7 @@ public class ChatPage extends javax.swing.JFrame {
         });
         jPanel3.add(sendFile);
 
+        EnvoiBttn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interface/send.png"))); // NOI18N
         EnvoiBttn.setText("Envoyer");
         EnvoiBttn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,7 +171,7 @@ public class ChatPage extends javax.swing.JFrame {
 
         jPanel2.add(jPanel3, java.awt.BorderLayout.EAST);
 
-        jPanel1.add(jPanel2);
+        jPanel1.add(jPanel2, java.awt.BorderLayout.CENTER);
 
         MessagesPanel.add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
@@ -178,6 +182,7 @@ public class ChatPage extends javax.swing.JFrame {
         DialUserLabel.setText("Messages");
         TopPanel.add(DialUserLabel, java.awt.BorderLayout.CENTER);
 
+        OptionsBttn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interface/options.png"))); // NOI18N
         OptionsBttn.setText("Options");
         OptionsBttn.setToolTipText("");
         OptionsBttn.addActionListener(new java.awt.event.ActionListener() {
@@ -383,6 +388,10 @@ public class ChatPage extends javax.swing.JFrame {
             
             JScrollBar scroll = this.MessageScroller.getVerticalScrollBar();
             scroll.setValue(scroll.getMaximum());
+            
+            this.sendFile.setEnabled(true);
+        }else{
+            this.sendFile.setEnabled(false);
         }
     }
     
@@ -394,11 +403,12 @@ public class ChatPage extends javax.swing.JFrame {
     public void open() {
         this.refreshUserlist();
         
+        
         //Select the first user if available
         if(this.Userlist.getModel().getSize() > 0){
             this.Userlist.setSelectedIndex(0);
-            this.setOnDialUser();
         }
+        this.setOnDialUser();
 
       //  this.jScrollPane2.getViewport().setOpaque(false);
         this.MessageScroller.getViewport().setOpaque(false);

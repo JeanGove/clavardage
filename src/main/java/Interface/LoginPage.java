@@ -7,6 +7,8 @@ import Interface.ChatPage;
 import Controller.Controller;
 import Database.ActiveUserList;
 import Tests.RemoteConnection;
+import java.awt.Toolkit;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -72,6 +76,7 @@ public class LoginPage extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        
         initComponents();
         //Get the broadcast address
         this.getBroadcastAddress(interf);
@@ -488,6 +493,14 @@ public class LoginPage extends javax.swing.JFrame {
      * @param c the controller used
      */
     public void open(Controller c) {
+       // System.out.println(new File("src/main/java/resources/appicon.png").getAbsolutePath());
+        //ImageIcon icon = new ImageIcon(getClass().getResource("appicon.png").getPath());
+        /*ImageIcon icon = new ImageIcon(getClass().getResource("appicon.png").getPath());
+        this.setIconImage(icon.getImage());*/
+        //getClass().getResource(name).getPath()
+        //String log = ""+ new File(getClass().getResource("appicon.png").getFile()).exists();
+        //System.out.println(log);
+        //this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("appicon.png")));
         
         //this.controller = c;
         if(this.broadcast != null)  this.ErrorPanel.setVisible(false);
