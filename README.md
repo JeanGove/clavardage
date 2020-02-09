@@ -1,6 +1,6 @@
 # ClavardApp
 Il est nécessaire de compiler le projet pour l'utiliser.
-Utilsez javac */*.java dans le répertoire java permet de le faire
+Utilsez javac */*.java dans le répertoire java permet de le faire.
 Version de JRE: 8 ou supérieur
 ## Mode client
 Utilisez la commande java Controller.Application <nomInterfaceRéseau> (exemple java Controller.Application eth0) pour lancer le programme
